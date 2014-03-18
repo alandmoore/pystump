@@ -1,0 +1,8 @@
+<form id=settings_form title='Application settings' method='POST' action='/post/settings'>
+<ul>
+{% for name, value in settings.items() %}
+<li><label>{{name}}</label><input type=text name='{{name}}', value="{{value}}" /></li>
+{% endfor %}
+<li><input type='submit' value='Save' /></li>
+</ul>
+</form>

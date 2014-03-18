@@ -1,0 +1,30 @@
+{% extends "base.jinja2" %}
+
+{% block body %}
+{% include "navigation.jinja2" %}
+<div id="content">
+<div id="title"></div>
+<div id="announcements">
+  {% for a in announcements: %}
+<div 
+   id="ann-{{a.get("id")}}"
+   class='announcement_display'
+   data-title = "{{a.get("title")|striptags|escape}}"
+   data-id={{a.get("id")|int}} 
+   data-duration={{a.get("duration")|int}}
+   data-fg={{a.get("fg_color")}}
+   data-bg={{a.get("bg_color")}}
+   data-author= "{{a.get("author")}}"
+   data-updated= "{{a.get("updated")}}"
+>  
+{{a.get("content")}}
+</div>
+{% endfor %}
+
+</div>
+   <div id="meta"></div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

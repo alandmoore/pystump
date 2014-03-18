@@ -1,0 +1,26 @@
+<nav {% if not session.get("auth") %} class=autohide {% endif %}>
+<ul id='nav_left'>
+{% if session.get("auth") %}
+<li id="link_home"><a href='{{url_for("list_announcements")}}'>List all</a></li>
+<li id="new_announcement"><a href="#">New Entry</a><li>
+{% else %}
+
+{% endif %}
+
+
+</ul>
+<ul id='nav_right'>
+<li id="link_tools"><a href="#">Tools</a>
+<ul>
+{% if session.get("auth") %}
+  <li id="logout"><a href="{{url_for("logout")}}">Logout</a></li>
+  <li id="link_settings"><a href="#">Settings</a></li>
+  <li id="link_initialize"><a href="#">Initialize Database</a></li>
+{% else %}
+  <li id="login"><a href="{{url_for("login_page")}}">Login</a></li>
+{% endif %}
+</ul>
+
+</li>
+</ul>
+</nav>

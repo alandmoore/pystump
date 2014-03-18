@@ -1,0 +1,23 @@
+{% extends "base.jinja2" %}
+
+{% block body %}
+{% include "navigation.jinja2" %}
+
+<div id="content">
+
+<div id="filter_controls">
+<label for='search'>Search: </label><input id='search' />
+</div>
+
+<ul id=announcement_list>
+{% for a in announcements %}
+<li 
+   data-id={{a.get("id")|int}}
+   title= "{{a.get("content")|striptags|escape}}"
+>
+&quot;{{a.get("title")|striptags|escape}}&quot; by {{a.get("author")}} updated {{a.get("updated")}}
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}
