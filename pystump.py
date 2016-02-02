@@ -26,7 +26,7 @@ from includes.auth.edirectory_auth import EDirectory
 from functools import wraps
 from markdown import markdown
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
 
 
 # Wrapper to secure callbacks
@@ -179,7 +179,7 @@ def json_get(callback):
 if __name__ == "__main__":
     app.debug = True
     app.config.from_pyfile("pystump.conf", silent=True)
-    app.run(
-        host=app.config.get("HOST", 'localhost'),
-        port=app.config.get("PORT", 5000)
-    )
+    host = app.config.get("HOST", 'localhost')
+    port = app.config.get("PORT", 5000)
+    app.run(host=host, port=port)
+    print("PyStump is running at http://{}:{}".format(host, port))
