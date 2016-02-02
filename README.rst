@@ -14,7 +14,7 @@ PyStump is a web service for displaying announcement slides, such as for a digit
 
 PyStump is built on Flask, Python, and SQLite.
 
-Much of PyStump's codebase was originally borrowed from another project, .. _OmegaHymnal:http://www.alandmoore.com/omegahymnal/omegahymnal.html .
+Much of PyStump's codebase was originally borrowed from another project, `OmegaHymnal <http://www.alandmoore.com/omegahymnal/omegahymnal.html>`.
 
 
 Who would use this?
@@ -40,14 +40,14 @@ PyStump is released under the GNU GPL v3.  Please see the attached COPYING docum
 Authors
 =======
 
-PyStump is primarily the work of Alan D Moore (http://www.alandmoore.com).
+PyStump is primarily the work of `Alan D Moore <http://www.alandmoore.com>`.
 
 
 Included in the source tree are some javascript/css libraries by third parties:
 
-- .. _jQuery:http://jquery.com
-- .. _jQuery-ui:http://jqueryui.com
-- .. _jQuery-timepicker-addon:http://trentrichardson.com/examples/timepicker/ by Trent Richardson
+- `jQuery <http://jquery.com>`
+- `jQuery-ui <http://jqueryui.com>`
+- `jQuery Timepicker Addon <http://trentrichardson.com/examples/timepicker/>` by Trent Richardson
 
 
 
