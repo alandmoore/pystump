@@ -11,7 +11,7 @@
 
 <p>If you want to initialize the database file with a set of empty tables, click &quot;Initialize&quot; below.  Otherwise, close the browser, shut down PyStump, and inspect your database file using sqlite3.</p>
 
-<FORM action='/post/initialize' method='POST'>
+<FORM action='{{url_for('post', callback='initialize')}}' method='POST'>
 <input type='hidden' name='init_db', value=1 />
 <input type='hidden' name='_redirect_' value='/' />
 <input type='submit' value='Initialize' />
