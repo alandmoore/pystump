@@ -3,3 +3,4 @@ env/*
 pystump.db
 *.pyc
 */__pycache__/*
+.tern-port
