@@ -15,7 +15,7 @@
   <input name="expire" type="datetime" value="{{announcement.get("expire", '')}}" />
  </li>
  <li>
-  <label>Duration</label>
+  <label>Duration <span class="note">(seconds)</span></label>
   <input name="duration" type="number" min={{settings.get("Min Duration")}} max={{settings.get("Max Duration")}} value="{{announcement.get("duration")}}" />
  </li>
  <li>

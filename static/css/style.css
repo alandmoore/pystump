@@ -274,9 +274,9 @@ FORM UL LI LABEL
 FORM TEXTAREA[name=content]
 {
   display: block;
-  width: 80%;
+  width: 90%;
   clear: both;
-  height: 10em;
+  height: 15em;
   margin-bottom: .5em;
  }
 
