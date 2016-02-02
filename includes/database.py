@@ -5,6 +5,9 @@ Database model for PyStump
 import sqlite3
 from .util import debug
 
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 class Database:
 
@@ -40,9 +43,9 @@ class Database:
         """
         Creates a fresh, empty database.
         """
-        with open("sql/schema.sql", 'r') as sqlfile:
+        with open(os.path.join(BASE_DIR,"sql/schema.sql"), 'r') as sqlfile:
             self.cu().executescript(sqlfile.read())
-        with open("sql/default.sql", 'r') as sqlfile:
+        with open(os.path.join(BASE_DIR, "sql/default.sql"), 'r') as sqlfile:
             self.cu().executescript(sqlfile.read())
 
     def do_initialize_db(self, formdata, *args, **kwargs):
