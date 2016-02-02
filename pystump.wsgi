@@ -21,7 +21,7 @@ if os.environ.get('PYSTUMP_DEBUG'):
     # test server, activate Debugging
     print("Pystump debugging ON")
     from werkzeug.debug import DebuggedApplication
-    from main import app
+    from pystump import app
     application = DebuggedApplication(app, True)
 else:
-    from main import app as application
+    from pystump import app as application
