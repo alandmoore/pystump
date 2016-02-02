@@ -1,4 +1,4 @@
-<form id=settings_form title='Application settings' method='POST' action='/post/settings'>
+<form id=settings_form title='Application settings' method='POST' action='{{url_for('post', callback='settings')}}'>
 <ul>
 {% for name, value in settings.items() %}
 <li><label>{{name}}</label>
