@@ -13,6 +13,6 @@
 
 <FORM action='{{url_for('post', callback='initialize')}}' method='POST'>
 <input type='hidden' name='init_db', value=1 />
-<input type='hidden' name='_redirect_' value='/' />
+<input type='hidden' name='_redirect_' value='{{url_for('index')}}' />
 <input type='submit' value='Initialize' />
 </FORM>
