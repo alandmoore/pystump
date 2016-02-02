@@ -27,8 +27,10 @@ from functools import wraps
 from markdown import markdown
 
 app = Flask(__name__, instance_relative_config=True)
-app.config.from_pyfile("pystump.conf", silent=True)
+app.config.from_object("config")
+app.config.from_pyfile("config.py", silent=True)
 
+print(app.config)
 
 # Wrapper to secure callbacks
 def login_required(f):
@@ -181,5 +183,5 @@ if __name__ == "__main__":
     app.debug = True
     host = app.config.get("HOST", 'localhost')
     port = app.config.get("PORT", 5000)
+    print("PyStump running at http://{}:{}".format(host, port))
     app.run(host=host, port=port)
-    print("PyStump is running at http://{}:{}".format(host, port))
