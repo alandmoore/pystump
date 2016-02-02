@@ -6,9 +6,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/style.css")}}' />
     <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/jquery-ui.css")}}' />
+    <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/jquery-ui-timepicker-addon.css")}}' />
     <script src='{{url_for("static", filename="js/jquery.js")}}'></script>
     <script src='{{url_for("static", filename="js/jquery-ui.js")}}'></script>
-    <script> 
+    <script src='{{url_for("static", filename="js/jquery-ui-timepicker-addon.js")}}'></script>
+    <script>
       document.basepath = "{{url_for("index", _external=True)}}";
     </script>
     {% block additional_headers %}
@@ -16,7 +18,7 @@
     {% if settings|length > 0 %}
     <script>
       {% for key, value in settings.items(): %}
-	var {{key|replace(' ', '_')}} = "{{value[0] if value[0] != None}}";
+    var {{key|replace(' ', '_')}} = "{{value[0] if value[0] != None}}";
       {% endfor %}
       </script>
     {% endif %}

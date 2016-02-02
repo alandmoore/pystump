@@ -17,6 +17,15 @@ var default_dialog_options = {
 function show_popup_form(data){
     default_dialog_options.title = $(data).attr("title");
     $("#_dialog_").html(data).dialog(default_dialog_options);
+    initialize_form($("#_dialog_").find('FORM'));
+}
+
+function initialize_form(form){
+    var $form = $(form);
+
+    $form.find(":input[type=datetime]").datetimepicker();
+    $form.find(":input[type=date]").datepicker();
+    $form.find(":input[type=time]").timepicker();
 }
 
 function fit_el_to_page(el) {
