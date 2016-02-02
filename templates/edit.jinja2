@@ -1,14 +1,14 @@
-<form name="announcement_form" id="announcement_form" action="{{url_for("post", callback='announcement')}}" method="POST">
+<form name="announcement_form" id="announcement_form" action="{{url_for("post", callback='announcement')}}" method="POST" title="Edit Announcement">
 <input type=hidden name="id" value='{{announcement.get("id", '')}}' />
 <input type=hidden name="_redirect_" value='{{url_for("list_announcements")}}' />
 <ul>
-<li><label>Title</label><input name="title" type="datetime" value="{{announcement.get("title", '')}}"></li>
+<li><label>Title</label><input name="title" type="text" value="{{announcement.get("title", '')}}" required></li>
 <li><label>Activation Date</label><input name="activate" type="datetime" value="{{announcement.get("activate", '')}}" /></li>
 <li><label>Expiration Date</label><input name="expire" type="datetime" value="{{announcement.get("expire", '')}}" /> </li>
 <li><label>Duration</label><input name="duration" type="number" min={{settings.get("Min Duration")}} max={{settings.get("Max Duration")}} value="{{announcement.get("duration")}}" /></li>
 <li><label>Foreground Color</label><input name="fg_color" type="color" value="{{announcement.get("fg_color", "#000000")}}" /></li>
 <li><label>Background Color</label><input name="bg_color" type="color" value="{{announcement.get("bg_color", "#FFFFFF")}}"></li>
 
-<li><label>Content</label><textarea name='content'>{{announcement.get("content", '')}}</textarea>
+<li><label>Content</label><textarea name='content' required>{{announcement.get("content", '')}}</textarea>
 <li><input type=submit value=Save /></li>
 </ul>

@@ -16,7 +16,7 @@
     {% if settings|length > 0 %}
     <script>
       {% for key, value in settings.items(): %}
-	var {{key|replace(' ', '_')}} = "{{value|escape}}";
+	var {{key|replace(' ', '_')}} = "{{value[0] if value[0] != None}}";
       {% endfor %}
       </script>
     {% endif %}

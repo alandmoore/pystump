@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS settings;
 CREATE TABLE IF NOT EXISTS settings (
        setting_name TEXT PRIMARY KEY
        ,setting_value TEXT
+       ,setting_type TEXT
 );
 
 -- Active announcements

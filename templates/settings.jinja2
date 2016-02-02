@@ -1,7 +1,12 @@
 <form id=settings_form title='Application settings' method='POST' action='/post/settings'>
 <ul>
 {% for name, value in settings.items() %}
-<li><label>{{name}}</label><input type=text name='{{name}}', value="{{value}}" /></li>
+<li><label>{{name}}</label>
+{% if value[1] == 'checkbox' %}
+<input type='{{value[1]}}' name='{{name}}', value= '1' {% if value[0] == '1' %}checked{% endif %}>
+{% else %}
+<input type='{{value[1]}}' name='{{name}}', value="{{value[0]}}" /></li>
+{% endif %}
 {% endfor %}
 <li><input type='submit' value='Save' /></li>
 </ul>

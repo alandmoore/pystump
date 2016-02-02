@@ -17,7 +17,7 @@
    data-author= "{{a.get("author")}}"
    data-updated= "{{a.get("updated")}}"
 >  
-{{a.get("content")}}
+{{a.get("content")|markdown}}
 </div>
 {% endfor %}
 

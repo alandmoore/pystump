@@ -1,6 +1,6 @@
 BODY
 { 
-  background-color: #333;
+  background-color: #666;
   color: white;
   font-size: 12pt;
   font-family: Tahoma, Arial, Sans;
@@ -20,10 +20,6 @@ A:hover
   font-style: italic;
  }
 
-input[type=text]
-{ 
-  min-width: 30em;
- }
 
 .hidden
 {
@@ -33,16 +29,31 @@ input[type=text]
    height: 0;
 }
 
-DIV.songpage
-{ 
-  font-size: 5em;
-  text-shadow: 0px 2px 2px #888;
-  padding: .5em 30px 20px 30px;
-  width: 90%;
-  height: 100%;
-  overflow: auto;
-  margin-top: 1em;
-  }
+#login_form
+{
+   width: 80%;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+#login_form UL
+{
+   margin-right: auto;
+   margin-left: auto;
+   width: 36em;
+}
+
+#login_form H1
+{
+   position: static!important;
+   top: 0;
+}
+
+#login_form FORM INPUT[type=text],
+#login_form FORM INPUT[type=password]
+{
+   width: 24em;
+}
 
 NAV 
 { 
@@ -84,13 +95,13 @@ NAV UL
 #nav_left
 {
    float: left;
-   width: 25%;
+   width: 40%;
 }
 
 #nav_right
 {
    float: right;
-   width: 25%;
+   width: 40%;
 }
 
 #nav_right LI
@@ -156,7 +167,7 @@ NAV UL LI UL LI:hover
 #content
 { 
    padding: 0;
-   text-align: center;
+   text-align: left;
    vertical-align: middle;
    width: 100%;
    margin: 0;
@@ -179,7 +190,7 @@ NAV UL LI UL LI:hover
 {
   list-style: none;
   overflow: auto;
-  width: 99%;
+  width: 80%;
   position: relative;
   overflow: auto;
   height: auto;
@@ -192,10 +203,10 @@ NAV UL LI UL LI:hover
   border-radius: 5px;
   background-color: silver;
   color: #111;
-  text-align: center;
+  text-align: left;
   vertical-align: middle;
   margin: 4px;
-  padding: 0px;
+  padding: 1em 0 0 1em;
   letter-spacing: .1em;
   height: 2em;
   overflow: hidden;
@@ -253,18 +264,23 @@ FORM UL LI LABEL
   width: 10em;
  }
 
-FORM TEXTAREA.page_textarea
+FORM TEXTAREA[name=content]
 { 
   display: block;
   width: 80%;
   clear: both;
-  height: 7em;
+  height: 10em;
   margin-bottom: .5em;
  }
 
-FORM INPUT[type=text]
+FORM INPUT[type=text],
+FORM INPUT[type=password],
+FORM INPUT[type=datetime],
+FORM INPUT[type=color],
+FORM INPUT[type=date],
+FORM INPUT[type=number]
 {
-   width: 24em;
+   width: 30em;
 }
 
 #delete{ 

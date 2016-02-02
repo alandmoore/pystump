@@ -1,9 +1,10 @@
 """
-Database model for OMEGA HYMNAL.
+Database model for PyStump
 """
 
 import sqlite3
 from .util import debug
+
 
 class Database:
 
@@ -29,7 +30,7 @@ class Database:
         else:
             self.cu().execute(query, data)
         if return_results:
-            results =  self.cu().fetchall()
+            results = self.cu().fetchall()
             return [dict(x) for x in results]
         else:
             self.cx().commit()
@@ -43,7 +44,7 @@ class Database:
             self.cu().executescript(sqlfile.read())
         with open("sql/default.sql", 'r') as sqlfile:
             self.cu().executescript(sqlfile.read())
-            
+
     def do_initialize_db(self, formdata, *args, **kwargs):
         confirm = formdata.get("init_db")
         if confirm:
@@ -55,23 +56,34 @@ class Database:
         are_tables = [x.get("name") for x in self.query(query)]
         debug("Tables that exist: " + are_tables.__str__())
         should_be_tables = ["settings", "announcements"]
-        missing = [table for table in should_be_tables if table not in are_tables]
+        missing = [
+            table
+            for table in should_be_tables
+            if table not in are_tables
+        ]
         return missing
-    
+
     ###########
     # Getters #
     ###########
 
     def get_settings(self):
-        query = """SELECT setting_name, setting_value FROM settings"""
+        query = """
+        SELECT setting_name, setting_value, setting_type FROM settings
+        """
         res = self.query(query)
-        return dict((x["setting_name"], x["setting_value"]) for x in res)
+        return dict(
+            (x["setting_name"], (x["setting_value"], x["setting_type"]))
+            for x in res
+        )
 
     def get_setting_value(self, setting):
-        query = """SELECT setting_value FROM settings WHERE setting_name LIKE ?"""
+        query = """
+        SELECT setting_value FROM settings WHERE setting_name LIKE ?
+        """
         res = self.query(query, (setting,))
         return (len(res) > 0 and res[0].get("setting_value")) or None
-    
+
     def get_active_announcements(self):
         query = """SELECT * FROM announcements_v"""
         return self.query(query)
@@ -88,8 +100,7 @@ class Database:
         query = """SELECT * FROM announcements WHERE id = ?"""
         res = self.query(query, (id,))
         return len(res) > 0 and res[0] or {}
-        
-    
+
     ###########
     # Setters #
     ###########
@@ -98,17 +109,21 @@ class Database:
         max_duration = self.get_setting_value("Max Duration")
         min_duration = self.get_setting_value("Min Duration")
         qdata = {
-                "title" : formdata.get("title")
-                ,"content" : formdata.get("content")
-                ,"author" : username
-                ,"activate" : formdata.get("activate")
-                ,"expire"  : formdata.get("expire")
-                ,"duration" : int(formdata.get("duration"))
-                ,"max_duration" : int(max_duration) or 999999
-                ,"min_duration" : int(min_duration) or 0
-                ,"fg_color"     : formdata.get("fg_color")
-                ,"bg_color"     : formdata.get("bg_color")
-                }
+            "title": formdata.get("title"),
+            "content": formdata.get("content"),
+            "author": username,
+            "activate": formdata.get("activate"),
+            "expire": formdata.get("expire"),
+            "duration": (
+                formdata.get("duration")
+                and int(formdata.get("duration"))
+                or None
+            ),
+            "max_duration": int(max_duration) or 999999,
+            "min_duration": int(min_duration) or 0,
+            "fg_color": formdata.get("fg_color"),
+            "bg_color": formdata.get("bg_color")
+        }
         debug(qdata)
         if formdata.get("id"):
             debug("UPDATE query, id={}".format(formdata.get("id")))
@@ -116,14 +131,15 @@ class Database:
             query = """UPDATE announcements SET title=:title, content=:content,
             author = :author, activate = :activate, expire = :expire,
             duration=MAX(MIN(:duration, :max_duration), :min_duration),
-            fg_color=:fg_color, bg_color=:bg_color
+            fg_color=:fg_color, bg_color=:bg_color, updated=DATETIME('now')
             WHERE id=:id"""
-        else: # insert query
+        else:  # insert query
             debug("INSERT query")
             query = """INSERT INTO announcements(title, content, author, activate,
-            expire, duration, updated, fg_color, bg_color)
+            expire, duration, fg_color, bg_color, updated)
             VALUES (:title, :content, :author, :activate, :expire,
-            MAX(MIN(:duration, :max_duration), :min_duration, :fg_color, :bg_color), DATETIME('now') )
+            MAX(MIN(:duration, :max_duration), :min_duration),
+            :fg_color, :bg_color, DATETIME('now') )
             """
         res = self.query(query, qdata, False)
         debug(res)
@@ -135,10 +151,15 @@ class Database:
         query = """DELETE FROM announcments WHERE id=?"""
         self.query(query, id, False)
         return ""
-    
+
     def save_settings(self, formdata, **kwargs):
-        query = """INSERT OR REPLACE INTO settings(setting_name, setting_value) VALUES(?, ?)"""
-        for key, value in formdata.items():
-            self.query(query, (key, value), False)
+        query = """INSERT OR REPLACE INTO
+        settings(setting_name, setting_value, setting_type)
+        VALUES(:setting, :value,
+        (SELECT setting_type FROM settings s
+        WHERE s.setting_name LIKE :setting))"""
+        settings = self.get_settings().keys()
+        for setting in settings:
+            value = formdata.get(setting)
+            self.query(query, {"setting": setting, "value": value}, False)
         return ""
-        

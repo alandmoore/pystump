@@ -3,12 +3,13 @@
 {% block body %}
 <div id="navigation">&nbsp;</div>
 <div id="content">
-<h1>Please Login to PyStump</h1>
   {% if error %}
     <p class='error'>{{error}}
   {% endif %}
 
 <form name='login' id='login_form' method='POST'>
+<h1>Please Login to PyStump</h1>
+
 <ul>
 <li><label>Username: </label><input type='text' name='username'
 				    {% if username %}
