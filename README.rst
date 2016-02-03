@@ -48,7 +48,7 @@ Included in the source tree are some javascript/css libraries by third parties:
 - `jQuery <http://jquery.com>`_
 - `jQuery-ui <http://jqueryui.com>`_
 - `jQuery Timepicker Addon <http://trentrichardson.com/examples/timepicker/>`_ by Trent Richardson
-
+- `CKEditor <http://ckeditor.com>`_
 
 
 Bugs, Features, Contributions
