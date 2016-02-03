@@ -134,7 +134,8 @@ class Database:
             query = """UPDATE announcements SET title=:title, content=:content,
             author = :author, activate = :activate, expire = :expire,
             duration=MAX(MIN(:duration, :max_duration), :min_duration),
-            fg_color=:fg_color, bg_color=:bg_color, updated=DATETIME('now')
+            fg_color=:fg_color, bg_color=:bg_color,
+            updated=DATETIME('now', 'localtime')
             WHERE id=:id"""
         else:  # insert query
             debug("INSERT query")
@@ -142,7 +143,7 @@ class Database:
             expire, duration, fg_color, bg_color, updated)
             VALUES (:title, :content, :author, :activate, :expire,
             MAX(MIN(:duration, :max_duration), :min_duration),
-            :fg_color, :bg_color, DATETIME('now') )
+            :fg_color, :bg_color, DATETIME('now', 'localtime') )
             """
         res = self.query(query, qdata, False)
         debug(res)
