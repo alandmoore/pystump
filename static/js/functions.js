@@ -22,10 +22,30 @@ function show_popup_form(data){
 
 function initialize_form(form){
     var $form = $(form);
+    var date_display_fmt = "m/d/yy";
+    var time_display_fmt = "h:mm tt";
 
-    $form.find(":input[type=datetime]").datetimepicker();
-    $form.find(":input[type=date]").datepicker();
-    $form.find(":input[type=time]").timepicker();
+    $form.find(":input[type=datetime], :input[type=date], :input[type=time]").each(function(i, el){
+        var $input = $(el);
+        var widget = $input.attr("type") + "picker";
+        var altfield_id = $input.data("altfield");
+        var dateval = new Date($input.val());
+
+        $input[widget]({
+            altField: "#" + altfield_id,
+            altFormat: "yy-mm-dd",
+            altTimeFormat: "HH:mm",
+            altSeparator: "T",
+            altFieldTimeOnly: false,
+            timeFormat: time_display_fmt,
+            dateFormat: date_display_fmt,
+            constrainInput: true,
+            parse: 'loose'
+        });
+
+        $input[widget]('setDate', dateval);
+    });
+
 }
 
 function fit_el_to_page(el) {
@@ -101,7 +121,7 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on("submit", "#announcement_form", function(e){
+    $(document).on("ignore", "#announcement_form", function(e){
         //e.preventDefault();
         //make sure dates and datetimes are ISO format
         $("input[type=date],input[type=datetime]").each(function(i, el){

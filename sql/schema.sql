@@ -5,14 +5,14 @@
 DROP TABLE IF EXISTS announcements;
 
 CREATE TABLE IF NOT EXISTS announcements (
-       id    	   INTEGER PRIMARY KEY AUTOINCREMENT
-       ,title 	   TEXT NOT NULL
-       ,content	   TEXT
-       ,author	   TEXT
-       ,activate   DATETIME
-       ,expire	   DATETIME
+       id          INTEGER PRIMARY KEY AUTOINCREMENT
+       ,title      TEXT NOT NULL
+       ,content    TEXT
+       ,author     TEXT
+       ,activate   TIMESTAMP
+       ,expire     TIMESTAMP
        ,duration   INTEGER
-       ,updated	   DATETIME
+       ,updated    TIMESTAMP
        ,fg_color   TEXT
        ,bg_color   TEXT
 );
@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS settings (
 DROP VIEW IF EXISTS announcements_v;
 
 CREATE VIEW announcements_v AS
-       	SELECT * FROM announcements
-	WHERE (activate is NULL or activate = '' or activate < datetime('now')) AND
-	      (expire is NULL or expire = '' or expire > datetime('now'))
-	ORDER BY id ASC
+        SELECT * FROM announcements
+    WHERE (activate is NULL or activate = '' or activate < datetime('now')) AND
+          (expire is NULL or expire = '' or expire > datetime('now'))
+    ORDER BY id ASC
 ;

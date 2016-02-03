@@ -3,11 +3,12 @@ Database model for PyStump
 """
 
 import sqlite3
-from .util import debug
+from .util import debug, string_to_datetime
 
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 
 class Database:
 
@@ -18,7 +19,10 @@ class Database:
 
     def cx(self):
         if not self.cx_obj:
-            self.cx_obj = sqlite3.connect(self.dbfile)
+            self.cx_obj = sqlite3.connect(
+                self.dbfile,
+                detect_types=sqlite3.PARSE_DECLTYPES
+            )
             self.cx_obj.row_factory = sqlite3.Row
         return self.cx_obj
 
@@ -102,6 +106,7 @@ class Database:
             return {}
         query = """SELECT * FROM announcements WHERE id = ?"""
         res = self.query(query, (id,))
+        print(res)
         return len(res) > 0 and res[0] or {}
 
     ###########
@@ -115,8 +120,8 @@ class Database:
             "title": formdata.get("title"),
             "content": formdata.get("content"),
             "author": username,
-            "activate": formdata.get("activate"),
-            "expire": formdata.get("expire"),
+            "activate": string_to_datetime(formdata.get("activate")),
+            "expire": string_to_datetime(formdata.get("expire")),
             "duration": (
                 formdata.get("duration")
                 and int(formdata.get("duration"))
