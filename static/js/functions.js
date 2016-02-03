@@ -102,7 +102,8 @@ function show_current_page(){
     setTimeout(function(){
         document.current_page = cp.next();
         if (document.current_page.length === 0){
-            document.current_page = $("#announcements .announcement_display:first");
+            window.location.reload();
+            //document.current_page = $("#announcements .announcement_display:first");
         }
         cp.hide()
         show_current_page();
