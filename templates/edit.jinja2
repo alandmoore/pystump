@@ -31,7 +31,7 @@
 <li>
  <label>Content</label>
  <p class="note" style="clear: both">This field supports <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown syntax</a></p>
- <textarea name='content' required>{{announcement.get("content", '')}}</textarea>
+ <textarea class="ckedit" id="announcement_content_textarea" name='content' required>{{announcement.get("content", '')}}</textarea>
 </li>
 <li>
  <input type=submit value=Save />

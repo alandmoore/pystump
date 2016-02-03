@@ -41,6 +41,11 @@ A:hover
    font-size: .8em;
 }
 
+.marker
+{
+   background-color: yellow;
+}
+
 #login_form
 {
    width: 80%;

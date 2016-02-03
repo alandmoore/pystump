@@ -18,6 +18,13 @@ function show_popup_form(data){
     default_dialog_options.title = $(data).attr("title");
     $("#_dialog_").html(data).dialog(default_dialog_options);
     initialize_form($("#_dialog_").find('FORM'));
+    $("TEXTAREA.ckedit").each(function(i, el){
+        CKEDITOR.replace(el.id);
+        // trigger a change on color inputs
+        $("input[type=color]").each(function(i, el){
+            $(el).trigger("change");
+        });
+    });
 }
 
 function initialize_form(form){
@@ -55,6 +62,7 @@ function initialize_form(form){
             }
         });
     });
+
 
 }
 
@@ -147,6 +155,18 @@ $(document).ready(function(){
         });
 
         return e;
+    });
+
+    $(document).on('change', 'input[name=fg_color],input[name=bg_color]', function(e){
+        //make the CKEDITOR reflect the changes.
+
+        var editor_doc = CKEDITOR.instances.announcement_content_textarea.document.getBody()["$"];
+        var $this = $(this);
+        if ($this.attr("name") === "fg_color"){
+            editor_doc.style["color"] = $this.val();
+        }else{
+            editor_doc.style["background-color"] = $this.val();
+        }
     });
 
     //SETTINGS
