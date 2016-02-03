@@ -5,8 +5,13 @@
 import ldap3 as ldap
 from .authenticator import auth_backend
 
+
 class AD(auth_backend):
-    def __init__(self, host='localhost', port="389", base_dn="",  bind_dn_username="", bind_dn_password="", require_group=None, ssl=False):
+    def __init__(
+            self, host='localhost', port="389", base_dn="",
+            bind_dn_username="", bind_dn_password="",
+            require_group=None, ssl=False
+    ):
         """Contructor for the connection.  Assumes plaintext LDAP"""
         self.error = ""
         self.host = host
@@ -14,8 +19,8 @@ class AD(auth_backend):
         self.bind_dn = bind_dn_username
         self.bind_pw = bind_dn_password
         self.require_group = require_group
-        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, False)
-        ldap.set_option(ldap.OPT_REFERRALS, 0)
+        # ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, False)
+        # ldap.set_option(ldap.OPT_REFERRALS, 0)
         self.authenticated_user = None
         self.authenticated_dn = None
         self.authsource = "Active Directory on {}".format(base_dn)
@@ -25,64 +30,91 @@ class AD(auth_backend):
             (port and ":{}".format(port)) or ''
         ])
 
-        #attempt to connect and bind to the server
-        try:
-            self.con = ldap.initialize(self.ldap_url)
-            if ssl:
-                self.con.start_tls_s()
-            self.con.simple_bind_s(self.bind_dn, self.bind_pw)
-        except ldap.INVALID_CREDENTIALS:
+        # attempt to connect and bind to the server
+        self.server = ldap.Server(self.ldap_url, use_ssl=ssl)
+        self.con = ldap.Connection(self.server, user=self.bind_dn, password=self.bind_pw)
+        self.bound = self.con.bind()
+        if not self.bound:
             self.error = "Could not bind to server {}.".format(self.host)
             if self.bind_dn is not None:
                 self.error += "as %s" % self.bind_dn
                 self.con = False
-        except ldap.SERVER_DOWN:
-            self.error = "Could not make connection to {}.".format(self.host)
 
-    def check (self, username=None, password=None):
-        """Given a simple username and password, return true or false if the user is authenticated"""
-        if self.con:
-            res = self.con.search_s(self.base_dn, ldap.SCOPE_SUBTREE, "sAMAccountName=%s" % username)
-        else:
+    def check(self, username=None, password=None):
+        """Check a username and password against the LDAP database.
+
+        Return true or false, and set the authenticated_user property.
+        """
+        if not self.con:
             return False
-        #For some stupid reason, ldap will bind successfully with a valid username and a BLANK PASSWORD, so we have to disallow blank passwords.
+
+        # For some stupid reason, ldap will bind successfully with
+        # a valid username and a BLANK PASSWORD,
+        # so we have to disallow blank passwords.
         if not password:
             self.error = "Invalid credentials: Login as {} failed.".format(username)
             return False
 
-        if not res[0][0]:
+        success = self.con.search(
+            search_base=self.base_dn,
+            search_filter="(sAMAccountName={})".format(username),
+            search_scope=ldap.SUBTREE
+        )
+        if not success:
+            self.error = "Search for {} failed".format(username)
+            return False
+
+        user_dn = self.con.response[0].get("dn")
+
+        if not user_dn:
             self.error = "No such user {}.".format(username)
             return False
         else:
-            dn = res[0][1]["userPrincipalName"][0]
             try:
-                self.con.simple_bind_s(dn, password)
+                self.con = ldap.Connection(self.server, user=user_dn, password=password)
+                self.con.bind()
                 self.authenticated_user = username
-                self.authenticated_dn = dn
+                self.authenticated_dn = user_dn
             except:
                 self.error = "Invalid credentials: Login as {} failed".format(username)
                 return False
 
-        #If you've gotten to this point, the username/password checks out
+        # If you've gotten to this point, the username/password checks out
         if self.require_group and not (self.in_group(self.require_group)):
-            self.error = "Permission denied"
+            self.error = "Permission denied: not in required group {}".format(
+                self.require_group
+            )
             return False
 
-        return True # All tests passed!
-
+        return True  # All tests passed!
 
     def in_group(self, group):
-        group_res = self.con.search_s(self.base_dn, ldap.SCOPE_SUBTREE, "cn={}".format(group))
+        if not self.con:
+            self.error = "No connection"
+            return False
+
+        group_res = self.con.search(
+            self.base_dn,
+            "(cn={})".format(group),
+            search_scope=ldap.SUBTREE
+        )
         if group_res:
-            group_dn = group_res[0][0]
-            if group_dn in self.info_on(self.authenticated_user).get("memberOf"):
+            group_dn = self.con.response[0].get("dn")
+            if group_dn in self.info_on(
+                    self.authenticated_user
+            ).get("memberOf"):
                 return True
         return False
 
     def info_on(self, username):
         """Returns ldap information on the given username"""
         if self.con:
-            res = self.con.search_s(self.base_dn, ldap.SCOPE_SUBTREE, "sAMAccountName={}".format(username))
+            res = self.con.search(
+                self.base_dn,
+                "(sAMAccountName={})".format(username),
+                search_scope=ldap.SUBTREE,
+                attributes=ldap.ALL_ATTRIBUTES
+            )
         else:
             return False
 
@@ -90,7 +122,7 @@ class AD(auth_backend):
             self.error = "No such user {}.".format(username)
             return False
 
-        return res[0][1]
+        return self.con.response[0]['attributes']
 
     def get_auth_user_fullname(self):
         if self.authenticated_user:
