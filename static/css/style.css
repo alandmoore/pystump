@@ -8,6 +8,11 @@ BODY
   margin: 0px;
 }
 
+HTML, BODY, #content
+{
+   height: 100%;
+}
+
 A
 {
   color: #EEF;
