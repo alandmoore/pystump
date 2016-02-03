@@ -186,13 +186,6 @@ NAV UL LI UL LI:hover
    margin-top: 2em;
 }
 
-#content H1
-{
-   position: absolute;
-   top: 40%;
-   text-align: center;
-   width: 100%;
-}
 
 /*********************/
 /* Announcement list */
