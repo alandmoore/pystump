@@ -22,6 +22,8 @@ function show_popup_form(data){
 
 function initialize_form(form){
     var $form = $(form);
+
+    //Date/Datetime/time inputs
     var date_display_fmt = "m/d/yy";
     var time_display_fmt = "h:mm tt";
 
@@ -29,7 +31,7 @@ function initialize_form(form){
         var $input = $(el);
         var widget = $input.attr("type") + "picker";
         var altfield_id = $input.data("altfield");
-        var dateval = new Date($input.val());
+        var dateval = $input.val()? new Date($input.val()) : null;
 
         $input[widget]({
             altField: "#" + altfield_id,
@@ -44,6 +46,14 @@ function initialize_form(form){
         });
 
         $input[widget]('setDate', dateval);
+
+        //datetimepicker doesn't automatically clear the altField when its field is cleared.
+
+        $input.on("change", function(){
+            if ($input.val().trim() === ''){
+                $("#" + altfield_id).val('');
+            }
+        });
     });
 
 }
