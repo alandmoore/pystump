@@ -142,7 +142,7 @@ $(document).ready(function(){
     //SETTINGS
     //Show the settings dialog
     $(document).on("click", "#link_settings", function(event){
-        $.get("/settings", function(data){
+        $.get(document.basepath + "/settings", function(data){
             show_popup_form(data);
         });
     });
@@ -165,7 +165,7 @@ $(document).ready(function(){
     //Call the initialize form
     $(document).on("click", "#link_initialize", function(event){
         event.preventDefault();
-        $.get("/initialize", function(data){
+        $.get(document.basepath + "/initialize", function(data){
             show_popup_form(data);
             $("#initialize_form INPUT[type=submit]").attr("disabled", 1);
             $(document).on("change", "#init_db", function(){
