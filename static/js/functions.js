@@ -149,23 +149,6 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on("ignore", "#announcement_form", function(e){
-        //e.preventDefault();
-        //make sure dates and datetimes are ISO format
-        $("input[type=date],input[type=datetime]").each(function(i, el){
-            var $input = $(el);
-            var type = $input.attr('type');
-            var value = $input[type + 'picker']('getDate');
-            var formatted_value = (
-                $.datepicker.formatDate($.datepicker.ISO_8601, value) +
-                    ' ' +
-                    $.datepicker.formatTime('HH:mm', value)
-            );
-            $input.val(formatted_value);
-        });
-
-        return e;
-    });
 
     $(document).on('change', 'input[name=fg_color],input[name=bg_color]', function(e){
         //make the CKEDITOR reflect the changes.
@@ -177,6 +160,22 @@ $(document).ready(function(){
         }else{
             editor_doc.style["background-color"] = $this.val();
         }
+    });
+
+    $(document).on('change', 'input[name=delete]', function(e){
+        var $delcb = $(this);
+        var $form = $delcb.closest('FORM');
+
+        if ($delcb.is(':checked')){
+            $form.find(':input:not([type=hidden],[name=delete],[type=submit])').each(function(i, el){
+                $(el).attr("disabled", "disabled");
+            });
+        }else{
+            $form.find(':input').each(function(i, el){
+                $(el).removeAttr("disabled");
+            });
+        }
+
     });
 
     //SETTINGS

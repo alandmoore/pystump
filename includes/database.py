@@ -114,6 +114,10 @@ class Database:
     ###########
 
     def save_announcement(self, formdata, username="Unknown", **kwargs):
+
+        if formdata.get("delete"):
+            self.delete_announcement(formdata.get("id"))
+            return ''
         max_duration = self.get_setting_value("Max Duration")
         min_duration = self.get_setting_value("Min Duration")
         qdata = {
@@ -157,7 +161,7 @@ class Database:
     def delete_announcement(self, id, **kwargs):
         if not id:
             return None
-        query = """DELETE FROM announcments WHERE id=?"""
+        query = """DELETE FROM announcements WHERE id=?"""
         self.query(query, id, False)
         return ""
 
