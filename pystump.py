@@ -13,10 +13,9 @@ and your favorite standards-compliant web browser.
 
 """
 
-
 from flask import (
     Flask, g, render_template, request, json,
-    abort, redirect, session, url_for, Markup
+    abort, redirect, session, url_for
 )
 from includes.database import Database
 from includes.util import debug
@@ -33,6 +32,7 @@ app.config.from_pyfile("config.py", silent=True)
 print(app.config)
 
 # Wrapper to secure callbacks
+
 
 def login_required(f):
     @wraps(f)
@@ -72,6 +72,15 @@ def index():
             **g.std_args
         )
 
+
+@app.route("/slides")
+def slides():
+    announcements = g.db.get_active_announcements()
+    return render_template(
+        "slides.jinja2",
+        announcements=announcements,
+        **g.std_args
+    )
 
 @app.route("/list")
 @login_required

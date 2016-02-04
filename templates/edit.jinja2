@@ -18,7 +18,7 @@
  </li>
  <li>
   <label>Duration <span class="note">(seconds)</span></label>
-  <input name="duration" type="number" min={{settings.get("Min Duration")}} max={{settings.get("Max Duration")}} value="{{announcement.get("duration")}}" />
+  <input name="duration" type="number" min={{settings.get("Min Duration")[0]}} max={{settings.get("Max Duration")[0]}} value="{{announcement.get("duration", settings.get("Min Duration")[0])}}" />
  </li>
  <li>
   <label>Foreground Color</label>
