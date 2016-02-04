@@ -24,7 +24,7 @@ from includes.auth.authenticator import Authenticator, dummy_auth
 from includes.auth.ad_auth import AD
 from includes.auth.edirectory_auth import EDirectory
 from functools import wraps
-from markdown import markdown
+
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object("config")
@@ -33,6 +33,7 @@ app.config.from_pyfile("config.py", silent=True)
 print(app.config)
 
 # Wrapper to secure callbacks
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -40,12 +41,6 @@ def login_required(f):
             return redirect(url_for("login_page", next=request.url))
         return f(*args, **kwargs)
     return decorated_function
-
-
-# Create a basic markdown filter for jinja
-@app.template_filter('markdown')
-def markdown_filter(data):
-    return Markup(markdown(data))
 
 
 @app.before_request
