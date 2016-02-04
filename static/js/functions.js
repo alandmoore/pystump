@@ -109,7 +109,7 @@ function show_current_page(){
                 function(data){
                     $("#announcements").html(data);
                     document.current_page = $("#announcements .announcement_display:first");
-                    cp.hide();
+                    $("#announcements .announcement_display").hide();
                     show_current_page();
             });
         }else{
