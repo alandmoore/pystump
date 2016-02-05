@@ -211,7 +211,7 @@ NAV UL LI UL LI:hover
 {
   font-size: 1.2em;
   border-radius: 5px;
-  background-color: silver;
+  background-color: #AEA;
   color: #111;
   text-align: left;
   vertical-align: middle;
@@ -236,6 +236,18 @@ NAV UL LI UL LI:hover
   cursor: pointer;
   font-style: italic;
   }
+
+#announcement_list LI.expired
+{
+   background-color: black;
+   color: silver;
+}
+
+#announcement_list LI.delayed
+{
+   background-color: #EEA;
+   color: black;
+}
 
 FORM
 {

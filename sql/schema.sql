@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS settings (
 DROP VIEW IF EXISTS announcements_v;
 
 CREATE VIEW announcements_v AS
-        SELECT * FROM announcements
-    WHERE (activate is NULL or activate = '' or activate < datetime('now')) AND
-          (expire is NULL or expire = '' or expire > datetime('now'))
+        SELECT *, (activate is NOT NULL AND activate != '' AND activate > datetime('now')) as delayed,
+        (expire is NOT NULL AND expire != '' AND expire < datetime('now')) as expired
+    FROM announcements
     ORDER BY id ASC
 ;

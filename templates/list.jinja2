@@ -11,12 +11,13 @@
 
 <ul id=announcement_list>
 {% for a in announcements %}
-<li 
+<li
    data-id={{a.get("id")|int}}
    title= "{{a.get("content")|striptags|escape}}"
-   class= 'announcement_item'
+   class= 'announcement_item {{a.delayed and 'delayed' or ''}} {{a.expired and 'expired' or ''}}'
 >
-&quot;{{a.get("title")|striptags|escape}}&quot; by {{a.get("author")}} updated {{a.get("updated")}}
+   &quot;{{a.get("title")|striptags|escape}}&quot; by {{a.get("author")}}, updated {{a.get("updated")}}
+   <span class="status">{{a.expired and '(expired)' or ''}} {{a.delayed and '(delayed)' or ''}}</span>
 </li>
 {% endfor %}
 </ul>

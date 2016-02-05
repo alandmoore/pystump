@@ -92,11 +92,13 @@ class Database:
         return (len(res) > 0 and res[0].get("setting_value")) or None
 
     def get_active_announcements(self):
-        query = """SELECT * FROM announcements_v"""
+        query = """SELECT * FROM announcements_v
+                   WHERE NOT delayed and NOT expired"""
         return self.query(query)
 
     def get_all_announcements(self):
-        query = """SELECT * FROM announcements ORDER BY id ASC"""
+        query = """SELECT * FROM announcements_v
+                   ORDER BY expired, delayed, id DESC"""
         return self.query(query)
 
     def get_announcement(self, id):
