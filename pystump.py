@@ -12,39 +12,42 @@ It's written in python and requires the python flask framework
 and your favorite standards-compliant web browser.
 
 """
+from functools import wraps
 
 from flask import (
-    Flask, g, render_template, request, json,
+    Flask, g, render_template, request,
     abort, redirect, session, url_for
 )
 from includes.database import Database
-from includes.util import debug
 from includes.auth.authenticator import Authenticator, dummy_auth
 from includes.auth.ad_auth import AD
 from includes.auth.edirectory_auth import EDirectory
-from functools import wraps
 
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object("config")
 app.config.from_pyfile("config.py", silent=True)
 
-print(app.config)
 
 # Wrapper to secure callbacks
 
+def login_required(view_function):
+    """Redirect to the login page if the session is not authenticated"""
 
-def login_required(f):
-    @wraps(f)
+    @wraps(view_function)
     def decorated_function(*args, **kwargs):
+        """Function wrapped by login_required."""
+
         if not session.get("auth"):
             return redirect(url_for("login_page", next=request.url))
-        return f(*args, **kwargs)
+        return view_function(*args, **kwargs)
     return decorated_function
 
 
 @app.before_request
 def before_request():
+    """Run setup operations before each request."""
+
     g.debug = app.config.get("DEBUG")
     g.db = Database(app.config.get("DATABASE_FILE"))
     g.missing_tables = g.db.get_missing_tables()
@@ -58,6 +61,8 @@ def before_request():
 
 @app.route("/")
 def index():
+    """Main page of the application.  Shows the announcments."""
+
     if g.db_corrupt:
         return render_template(
             "corrupt.jinja2",
@@ -75,6 +80,11 @@ def index():
 
 @app.route("/slides")
 def slides():
+    """Return just the slides portion of the announcments.
+
+    Used by AJAX calls to repopulate the announcments.
+    """
+
     announcements = g.db.get_active_announcements()
     return render_template(
         "slides.jinja2",
@@ -82,9 +92,12 @@ def slides():
         **g.std_args
     )
 
+
 @app.route("/list")
 @login_required
 def list_announcements():
+    """Show the list of all announcments.  Part of the admin."""
+
     announcements = g.db.get_all_announcements()
     return render_template(
         "list.jinja2",
@@ -94,9 +107,11 @@ def list_announcements():
 
 
 @app.route("/edit")
-@app.route("/edit/<id>")
-def edit_announcement(id=None):
-    announcement = g.db.get_announcement(id)
+@app.route("/edit/<announcement_id>")
+def edit_announcement(announcment_id=None):
+    """Show the edit form for an announcement."""
+
+    announcement = g.db.get_announcement(announcment_id)
     return render_template(
         "edit.jinja2",
         announcement=announcement,
@@ -107,6 +122,8 @@ def edit_announcement(id=None):
 # Login, Logout
 @app.route("/login", methods=['GET', 'POST'])
 def login_page():
+    """Show the login screen."""
+
     error = None
     username = None
     authenticators = {"AD": AD, "dummy": dummy_auth, "eDirectory": EDirectory}
@@ -131,6 +148,8 @@ def login_page():
 @app.route("/logout")
 @login_required
 def logout():
+    """Remove session authentication."""
+
     session['auth'] = False
     session['username'] = None
     session['user_realname'] = None
@@ -139,13 +158,16 @@ def logout():
 
 @app.route("/settings")
 @login_required
-def settings():
-    debug(settings)
+def settings_form():
+    """Show the settings form."""
+
     return render_template("settings.jinja2", **g.std_args)
 
 
 @app.route("/initialize")
 def initialize_database():
+    """Show the form for initializing the database."""
+
     return render_template(
         "initialize_form.jinja2",
         filename=app.config['DATABASE_FILE'],
@@ -155,6 +177,12 @@ def initialize_database():
 
 @app.route("/post/<callback>", methods=["POST"])
 def post(callback):
+    """Handle posts to the application.
+
+    Each post should have a callback indicating what operation
+    to execute, as well as data to send along to the operation.
+    """
+
     callbacks = {
         "announcement": g.db.save_announcement,
         "delete": g.db.delete_announcement,
@@ -172,16 +200,6 @@ def post(callback):
         else:
             return result
 
-
-@app.route("/json/<callback>")
-def json_get(callback):
-    callbacks = {
-        }
-    if callback not in callbacks.keys():
-        abort(403)
-    else:
-        result = callbacks.get(callback)(**request.args.to_dict(flat=True))
-        return json.dumps(result)
 
 if __name__ == "__main__":
     app.debug = True
