@@ -172,9 +172,13 @@ var AnnouncementList = function(el, search_el){
 var AnnouncementDisplay = function(el, source_url){
     var $ad = $(el);
     if ($ad.length === 0){
+        $("#back_slide").set_enabled(false);
+        $("#advance_slide").set_enabled(false);
         return null;
+    }else{
+        $("#back_slide").set_enabled(true);
+        $("#advance_slide").set_enabled(true);
     }
-
 
     $ad.init = function(){
         $ad.slides = $ad.find(".announcement_display");
@@ -234,19 +238,31 @@ var AnnouncementDisplay = function(el, source_url){
 
         $ad.slide.show();
         fit_el_to_page("#" + $ad.slide.attr("id"));
-
-        setTimeout(
-            function(){
-                $ad.slide = $ad.slide.next();
-                if ($ad.slide.length === 0){
-                    $ad.refresh_slides();
-                }else{
-                    $ad.show_slide();
-                }
-            },
-            duration
-        );
+        if ($ad.advance_timeout){
+            clearTimeout($ad.advance_timeout);
+        }
+        $ad.advance_timeout = setTimeout($ad.advance_slide, duration);
     }
+
+    $ad.advance_slide = function(){
+        $ad.slide = $ad.slide.next();
+        if ($ad.slide.length === 0){
+            $ad.refresh_slides();
+        }else{
+            $ad.show_slide();
+        }
+    }
+    $ad.back_slide = function(){
+        $ad.slide = $ad.slide.prev();
+        if ($ad.slide.length === 0){
+            $ad.refresh_slides();
+        }else{
+            $ad.show_slide();
+        }
+    }
+
+    $(document).on("click", '#advance_slide', $ad.advance_slide);
+    $(document).on("click", "#back_slide", $ad.back_slide);
 
     $ad.init();
 

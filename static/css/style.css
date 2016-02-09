@@ -46,6 +46,11 @@ A:hover
    background-color: yellow;
 }
 
+a[disabled] {
+   pointer-events: none;
+   display: none;
+}
+
 #login_form
 {
    width: 80%;
@@ -112,7 +117,7 @@ NAV UL
 #nav_left
 {
    float: left;
-   width: 40%;
+   width: 50%;
 }
 
 #nav_right

@@ -2,6 +2,7 @@
 <ul id='nav_left'>
 {% if session.get("auth") %}
 <li id="link_index"><a href="{{url_for("index")}}">Preview</a></li>
+<li><a href="#" id="back_slide">&#9194;</a>&nbsp;<a href="#" id="advance_slide">&#9193;</a></li>
 <li id="link_list"><a href='{{url_for("list_announcements")}}'>List all</a></li>
 <li id="new_announcement"><a href="#">New Entry</a><li>
 {% else %}
