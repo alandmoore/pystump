@@ -108,10 +108,10 @@ def list_announcements():
 
 @app.route("/edit")
 @app.route("/edit/<announcement_id>")
-def edit_announcement(announcment_id=None):
+def edit_announcement(announcement_id=None):
     """Show the edit form for an announcement."""
 
-    announcement = g.db.get_announcement(announcment_id)
+    announcement = g.db.get_announcement(announcement_id)
     return render_template(
         "edit.jinja2",
         announcement=announcement,
