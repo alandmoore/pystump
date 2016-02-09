@@ -223,7 +223,10 @@ var AnnouncementDisplay = function(el, source_url){
                 $cdiv.css("background-repeat", "repeat");
                 break;
             }
+        }else{
+            $cdiv.css("background-image", "none");
         }
+
         $("#title").html($ad.slide.data("title"));
         meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
             (Show_Author ? ("By " + $ad.slide.data("author")) : '');
