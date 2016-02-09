@@ -48,7 +48,8 @@ def file_allowed(filename, allowed_extensions):
     """Determine if a filename is acceptable for upload."""
     allowed = (
         allowed_extensions is None or
-        ('.' in filename and filename.rsplit('.', 1)[1] in allowed_extensions)
+        ('.' in filename and
+         filename.rsplit('.', 1)[1].lower() in allowed_extensions)
     )
     return allowed
 
