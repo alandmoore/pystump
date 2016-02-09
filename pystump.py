@@ -16,8 +16,10 @@ from functools import wraps
 
 from flask import (
     Flask, g, render_template, request,
-    abort, redirect, session, url_for
+    abort, redirect, session, url_for,
+    send_from_directory
 )
+from includes.util import file_allowed, save_file, delete_file
 from includes.database import Database
 from includes.auth.authenticator import Authenticator, dummy_auth
 from includes.auth.ad_auth import AD
@@ -91,6 +93,13 @@ def slides():
         announcements=announcements,
         **g.std_args
     )
+
+
+@app.route("/uploads/<path:filename>")
+def uploads(filename):
+    """Return an uploaded file."""
+
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route("/list")
@@ -175,6 +184,32 @@ def initialize_database():
     )
 
 
+def save_announcement(formdata, username):
+    incoming = formdata.to_dict()
+    current = g.db.get_announcement(incoming.get("id", None))
+    bg_image = request.files.get('bg_image')
+
+    if incoming.get("delete_bg_image"):
+        delete_file(current.get("bg_image"), app.config["UPLOAD_FOLDER"])
+        incoming['bg_file'] = ''
+    elif incoming.get("delete"):
+        g.db.delete_announcement(incoming.get("id", None))
+        if current.get("bg_image"):
+            delete_file(current["bg_image"], app.config["UPLOAD_FOLDER"])
+    elif (
+        bg_image and
+        file_allowed(
+            bg_image.filename,
+            app.config.get("ALLOWED_FILE_EXTENSIONS")
+        )
+    ):
+        incoming['bg_image'] = save_file(bg_image, app.config["UPLOAD_FOLDER"])
+    else:
+        incoming['bg_image'] = current.get('bg_image')
+
+    return g.db.save_announcement(incoming, username)
+
+
 @app.route("/post/<callback>", methods=["POST"])
 def post(callback):
     """Handle posts to the application.
@@ -184,8 +219,7 @@ def post(callback):
     """
 
     callbacks = {
-        "announcement": g.db.save_announcement,
-        "delete": g.db.delete_announcement,
+        "announcement": save_announcement,
         "settings": g.db.save_settings,
         "initialize": g.db.do_initialize_db
     }

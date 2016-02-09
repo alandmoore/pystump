@@ -15,7 +15,9 @@ CREATE TABLE IF NOT EXISTS announcements (
        ,updated    TIMESTAMP
        ,fg_color   TEXT
        ,bg_color   TEXT
-);
+       ,bg_image   TEXT
+       ,bg_image_mode TEXT
+       );
 
 -- Settings table
 DROP TABLE IF EXISTS settings;

@@ -122,6 +122,10 @@ class Database:
             return ''
         max_duration = self.get_setting_value("Max Duration")
         min_duration = self.get_setting_value("Min Duration")
+        bg_image_mode = formdata.get("bg_image_mode")
+        if bg_image_mode not in ('stretch', 'tile', 'center', 'left', 'right'):
+            bg_image_mode = 'stretch'
+
         qdata = {
             "title": formdata.get("title"),
             "content": formdata.get("content"),
@@ -129,14 +133,16 @@ class Database:
             "activate": string_to_datetime(formdata.get("activate")),
             "expire": string_to_datetime(formdata.get("expire")),
             "duration": (
-                formdata.get("duration")
-                and int(formdata.get("duration"))
-                or None
+                formdata.get("duration") and
+                int(formdata.get("duration")) or
+                None
             ),
             "max_duration": int(max_duration) or 999999,
             "min_duration": int(min_duration) or 0,
             "fg_color": formdata.get("fg_color"),
-            "bg_color": formdata.get("bg_color")
+            "bg_color": formdata.get("bg_color"),
+            "bg_image": formdata.get("bg_image"),
+            "bg_image_mode": bg_image_mode
         }
         debug(qdata)
         if formdata.get("id"):
@@ -145,16 +151,18 @@ class Database:
             query = """UPDATE announcements SET title=:title, content=:content,
             author = :author, activate = :activate, expire = :expire,
             duration=MAX(MIN(:duration, :max_duration), :min_duration),
-            fg_color=:fg_color, bg_color=:bg_color,
-            updated=DATETIME('now', 'localtime')
+            fg_color=:fg_color, bg_color=:bg_color, bg_image=:bg_image,
+            bg_image_mode=:bg_image_mode, updated=DATETIME('now', 'localtime')
             WHERE id=:id"""
         else:  # insert query
             debug("INSERT query")
-            query = """INSERT INTO announcements(title, content, author, activate,
-            expire, duration, fg_color, bg_color, updated)
+            query = """
+            INSERT INTO announcements(
+                title, content, author, activate, expire, duration, fg_color,
+                bg_color, bg_image, bg_image_mode, updated)
             VALUES (:title, :content, :author, :activate, :expire,
-            MAX(MIN(:duration, :max_duration), :min_duration),
-            :fg_color, :bg_color, DATETIME('now', 'localtime') )
+            MAX(MIN(:duration, :max_duration), :min_duration), :fg_color,
+            :bg_color, :bg_image, :bg_image_mode, DATETIME('now', 'localtime'))
             """
         res = self.query(query, qdata, False)
         debug(res)

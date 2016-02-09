@@ -198,9 +198,32 @@ var AnnouncementDisplay = function(el, source_url){
         var duration = parseInt($ad.slide.data("duration"), 10) * 1000;
         var bg_color = $ad.slide.data("bg");
         var fg_color = $ad.slide.data("fg");
-        $("#content").css("background-color", bg_color);
+        var bg_image = $ad.slide.data("bg_image");
+        var bg_image_mode = $ad.slide.data("bg_image_mode");
+        var $cdiv = $ad.closest("#content");
+
+        $cdiv.css("background-color", bg_color);
         $ad.css("color", fg_color);
         $ad.slide.css("height", "100%");
+        if (bg_image){
+            $cdiv.css('background-image', "url('" + bg_image + "')");
+            switch (bg_image_mode) {
+            case 'stretch':
+                $cdiv.css("background-size", '100%');
+                break;
+            case 'left':
+            case 'right':
+            case 'center':
+                $cdiv.css("background-position", bg_image_mode);
+                $cdiv.css("background-repeat", 'no-repeat');
+                $cdiv.css("background-size", 'auto');
+                break;
+            case 'tile':
+                $cdiv.css("background-size", "auto");
+                $cdiv.css("background-repeat", "repeat");
+                break;
+            }
+        }
         $("#title").html($ad.slide.data("title"));
         meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
             (Show_Author ? ("By " + $ad.slide.data("author")) : '');

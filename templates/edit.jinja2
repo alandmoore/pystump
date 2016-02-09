@@ -1,4 +1,4 @@
-<form name="announcement_form" id="announcement_form" action="{{url_for("post", callback='announcement')}}" method="POST" title="Edit Announcement">
+<form name="announcement_form" id="announcement_form" action="{{url_for("post", callback='announcement')}}" method="POST" title="Edit Announcement" enctype="multipart/form-data">
 <input type=hidden name="id" value='{{announcement.get("id", '')}}' />
 <input type=hidden name="_redirect_" value='{{url_for("list_announcements")}}' />
 {% if announcement.get("id") %}
@@ -30,6 +30,29 @@
  <li>
   <label>Background Color</label>
   <input name="bg_color" type="color" value="{{announcement.get("bg_color", "#FFFFFF")}}">
+ </li>
+ <li>
+   <label>Background Image</label>
+   {% if announcement.get("bg_image") %}
+   <div style="float: left; border: 1px dashed #666;">
+   <img src='{{url_for("uploads", filename=announcement.get("bg_image"))}}' width="200"  />
+
+   <label for="delete_bg_image_cb" style="float: none">
+    <input type="checkbox" name="delete_bg_image" id="delete_bg_image_cb" />
+    Delete Image
+   </label>
+   </div>
+   {% else %}
+   <input type="file" name="bg_image" />
+   {% endif %}
+ </li>
+ <li>
+  <label>BG Image mode</label>
+  <SELECT name="bg_image_mode" >
+   {% for option in ('stretch', 'tile', 'center', 'right', 'left') %}
+   <OPTION value={{option}} {% if announcement.get('bg_image_mode') == option %}selected{% endif %}>{{option}}</OPTION>
+   {% endfor %}
+  </SELECT>
  </li>
 <li>
   <label>Content</label>

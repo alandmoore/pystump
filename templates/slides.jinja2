@@ -7,8 +7,10 @@
      data-duration={{a.get("duration")|int}}
      data-fg={{a.get("fg_color")}}
      data-bg={{a.get("bg_color")}}
-     data-author= "{{a.get("author")}}"
-     data-updated= "{{a.get("updated")}}"
+     data-author="{{a.get("author")}}"
+     data-updated="{{a.get("updated")}}"
+     data-bg_image="{{a.get("bg_image") and url_for('uploads', filename=a.get("bg_image")) or ''}}"
+     data-bg_image_mode="{{a.get("bg_image_mode")}}"
      >
      {{a.get("content")}}
   </div>
