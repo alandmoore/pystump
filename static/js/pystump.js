@@ -300,7 +300,7 @@ $(document).ready(function(){
                         $(el).set_enabled(false);
                     });
                 }else{
-                    $form.find(':input').each(function(i, el){
+                    form.find(':input').each(function(i, el){
                         $(el).set_enabled(true);
                     });
                 }
