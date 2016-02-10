@@ -12,8 +12,8 @@
 $.extend($.expr[':'], {
     'containsi': function(elem, i, match, array)
     {
-        return ((elem.textContent || elem.innerText || '') + (elem.title || '')).toLowerCase()
-            .indexOf((match[3] || "").toLowerCase()) >= 0;
+	return ((elem.textContent || elem.innerText || '') + (elem.title || '')).toLowerCase()
+	    .indexOf((match[3] || "").toLowerCase()) >= 0;
     }
 });
 
@@ -32,8 +32,8 @@ function fit_el_to_page(el) {
     //The basic concept here is to shrink the text by 10% until the scrollwidth is less than the target width, and scrollheight likewise.
     //This would indicate a lack of scrollbars.
     while (($(el)[0].scrollWidth > target_width || $(el)[0].scrollHeight > target_height) && font_size > 12){
-        font_size *= .9;
-        $(el).css("font-size", font_size+"px");
+	font_size *= .9;
+	$(el).css("font-size", font_size+"px");
     }
     $(el).width($(el)[0].scrollWidth);
 }
@@ -41,11 +41,11 @@ function fit_el_to_page(el) {
 // shortcut to disable or enable form elements
 $.fn.extend({
     set_enabled: function(enable){
-        if (enable){
-            $(this).removeAttr("disabled");
-        }else{
-            $(this).attr("disabled", "disabled");
-        }
+	if (enable){
+	    $(this).removeAttr("disabled");
+	}else{
+	    $(this).attr("disabled", "disabled");
+	}
     }
 });
 
@@ -61,73 +61,73 @@ var FormDialog = function(url, init_function, submit_function){
     $fd.url = document.basepath.replace(/\/$/, '') + url;
 
     $fd.dialog_options = {
-        width: "90%",
-        modal: true
+	width: "90%",
+	modal: true
     }
     $fd.$dialog = $("#_dialog_");
     $fd.$dialog.hide();
 
     $fd.showform  = function(url_suffix){
-        var url = url_suffix ? $fd.url + url_suffix : $fd.url;
+	var url = url_suffix ? $fd.url + url_suffix : $fd.url;
 
-        $.get(url, function(data){
-            $fd.dialog_options.title = $(data).attr("title");
-            $fd.$dialog.html(data).dialog($fd.dialog_options);
-            $fd.form = $fd.$dialog.find("FORM");
+	$.get(url, function(data){
+	    $fd.dialog_options.title = $(data).attr("title");
+	    $fd.$dialog.html(data).dialog($fd.dialog_options);
+	    $fd.form = $fd.$dialog.find("FORM");
 
-            //common form initialization
+	    //common form initialization
 
-            //Datetime inputs.
-            var date_display_fmt = "m/d/yy";
-            var time_display_fmt = "h:mm tt";
+	    //Datetime inputs.
+	    var date_display_fmt = "m/d/yy";
+	    var time_display_fmt = "h:mm tt";
 
-            $fd.form.find(":input[type=datetime], :input[type=date], :input[type=time]").each(
-                function(i, el){
-                    var $input = $(el);
-                    var widget = $input.attr("type") + "picker";
-                    var altfield_id = $input.data("altfield");
-                    var dateval = $input.val()? new Date($input.val()) : null;
+	    $fd.form.find(":input[type=datetime], :input[type=date], :input[type=time]").each(
+		function(i, el){
+		    var $input = $(el);
+		    var widget = $input.attr("type") + "picker";
+		    var altfield_id = $input.data("altfield");
+		    var dateval = $input.val()? new Date($input.val()) : null;
 
-                    $input[widget]({
-                        altField: "#" + altfield_id,
-                        altFormat: "yy-mm-dd",
-                        altTimeFormat: "HH:mm",
-                        altSeparator: "T",
-                        altFieldTimeOnly: false,
-                        timeFormat: time_display_fmt,
-                        dateFormat: date_display_fmt,
-                        constrainInput: true,
-                        parse: 'loose'
-                    });
+		    $input[widget]({
+			altField: "#" + altfield_id,
+			altFormat: "yy-mm-dd",
+			altTimeFormat: "HH:mm",
+			altSeparator: "T",
+			altFieldTimeOnly: false,
+			timeFormat: time_display_fmt,
+			dateFormat: date_display_fmt,
+			constrainInput: true,
+			parse: 'loose'
+		    });
 
-                    $input[widget]('setDate', dateval);
+		    $input[widget]('setDate', dateval);
 
-                    //datetimepicker doesn't automatically clear the altField when its field is cleared.
+		    //datetimepicker doesn't automatically clear the altField when its field is cleared.
 
-                    $input.on("change", function(){
-                        if ($input.val().trim() === ''){
-                            $("#" + altfield_id).val('');
-                        }
-                    });
-                });
+		    $input.on("change", function(){
+			if ($input.val().trim() === ''){
+			    $("#" + altfield_id).val('');
+			}
+		    });
+		});
 
-            // Textareas to CKEDITOR
-            $("TEXTAREA.ckedit").ckeditor();
+	    // Textareas to CKEDITOR
+	    $("TEXTAREA.ckedit").ckeditor();
 
-            //custom init function
+	    //custom init function
 
-            if (init_function){
-                init_function($fd.form);
-            }
+	    if (init_function){
+		init_function($fd.form);
+	    }
 
-            //submit function
+	    //submit function
 
-            if (submit_function){
-                $fd.form.on("submit", function(e){
-                    submit_function(e, $fd.form);
-                });
-            }
-        });
+	    if (submit_function){
+		$fd.form.on("submit", function(e){
+		    submit_function(e, $fd.form);
+		});
+	    }
+	});
     }//end show_form()
 
 
@@ -142,7 +142,7 @@ var AnnouncementList = function(el, search_el){
     $al.searchbox = $(search_el);
 
     if ($al.length === 0){
-        return null;
+	return null;
     }
 
     $al.items = $al.find(".announcement_item");
@@ -150,19 +150,19 @@ var AnnouncementList = function(el, search_el){
     $al.searchbox.focus();
 
     $al.searchbox.keyup(function(){
-        var term = $al.searchbox.val();
-        if (term.length > 0){
-            $al.items.hide();
-            $al.items.find(":containsi(" + term + ")").show();
-        }else{
-            $al.items.show();
-        }
+	var term = $al.searchbox.val();
+	if (term.length > 0){
+	    $al.items.hide();
+	    $al.items.find(":containsi(" + term + ")").show();
+	}else{
+	    $al.items.show();
+	}
     });
 
     $al.items.on("click", function(){
-        var id = $(this).data("id");
-        document.edit_form.showform("/" + id);
-        return false;
+	var id = $(this).data("id");
+	document.edit_form.showform("/" + id);
+	return false;
     });
 
     return $al;
@@ -172,93 +172,104 @@ var AnnouncementList = function(el, search_el){
 var AnnouncementDisplay = function(el, source_url){
     var $ad = $(el);
     if ($ad.length === 0){
-        $("#back_slide").set_enabled(false);
-        $("#advance_slide").set_enabled(false);
-        return null;
+	$("#back_slide").set_enabled(false);
+	$("#advance_slide").set_enabled(false);
+	return null;
     }else{
-        $("#back_slide").set_enabled(true);
-        $("#advance_slide").set_enabled(true);
+	$("#back_slide").set_enabled(true);
+	$("#advance_slide").set_enabled(true);
     }
 
     $ad.init = function(){
-        $ad.slides = $ad.find(".announcement_display");
-        $ad.slide = $ad.slides.first();
-        if ($ad.slide.length > 0){
-            $ad.show_slide();
-        }
+	$ad.slides = $ad.find(".announcement_display");
+	$ad.slide = $ad.slides.first();
+	if ($ad.slide.length > 0){
+	    $ad.show_slide();
+	}
     }
 
     $ad.refresh_slides = function(){
-        $.get(
-            document.basepath.replace(/\/$/, '') + "/slides",
-            function(data){
-                $ad.html(data);
-                $ad.init();
-            });
+	$.get(
+	    document.basepath.replace(/\/$/, '') + "/slides",
+	    function(data){
+		$ad.html(data);
+		$ad.init();
+	    });
     }
 
     $ad.show_slide = function(){
-        $ad.slides.hide();
-        var duration = parseInt($ad.slide.data("duration"), 10) * 1000;
-        var bg_color = $ad.slide.data("bg");
-        var fg_color = $ad.slide.data("fg");
-        var bg_image = $ad.slide.data("bg_image");
-        var bg_image_mode = $ad.slide.data("bg_image_mode");
-        var $cdiv = $ad.closest("#content");
+	$ad.slides.hide();
+	var transition = "blind";
+	var transition_time = 1000;
+	var duration = parseInt($ad.slide.data("duration"), 10) * 1000;
+	var bg_color = $ad.slide.data("bg");
+	var fg_color = $ad.slide.data("fg");
+	var bg_image = $ad.slide.data("bg_image");
+	var bg_image_mode = $ad.slide.data("bg_image_mode");
+	var $cdiv = $ad.closest("#content");
+	var cdiv_css = {"background-color": bg_color};
 
-        $cdiv.css("background-color", bg_color);
-        $ad.css("color", fg_color);
-        $ad.slide.css("height", "100%");
-        if (bg_image){
-            $cdiv.css('background-image', "url('" + bg_image + "')");
-            switch (bg_image_mode) {
-            case 'stretch':
-                $cdiv.css("background-size", '100%');
-                break;
-            case 'left':
-            case 'right':
-            case 'center':
-                $cdiv.css("background-position", bg_image_mode);
-                $cdiv.css("background-repeat", 'no-repeat');
-                $cdiv.css("background-size", 'auto');
-                break;
-            case 'tile':
-                $cdiv.css("background-size", "auto");
-                $cdiv.css("background-repeat", "repeat");
-                break;
-            }
-        }else{
-            $cdiv.css("background-image", "none");
-        }
+	var ad_css = {"color": fg_color};
+	$ad.slide.css("height", "100%");
+	$cdiv.css("visibility", "none");
+	fit_el_to_page("#" + $ad.slide.attr("id"));
+	$cdiv.css("visibility", "visible");
+	$cdiv.hide();
 
-        $("#title").html($ad.slide.data("title"));
-        meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
-            (Show_Author ? ("By " + $ad.slide.data("author")) : '');
-        $("#meta").html(meta_text);
+	if (bg_image){
+	    $cdiv.css('background-image', "url('" + bg_image + "')");
+	    switch (bg_image_mode) {
+	    case 'stretch':
+		$cdiv.css("background-size", '100%');
+		break;
+	    case 'left':
+	    case 'right':
+	    case 'center':
+		$cdiv.css("background-position", bg_image_mode);
+		$cdiv.css("background-repeat", 'no-repeat');
+		$cdiv.css("background-size", 'auto');
+		break;
+	    case 'tile':
+		$cdiv.css("background-size", "auto");
+		$cdiv.css("background-repeat", "repeat");
+		break;
+	    }
+	}else{
+	    $cdiv.css("background-image", "none");
+	}
 
-        $ad.slide.show();
-        fit_el_to_page("#" + $ad.slide.attr("id"));
-        if ($ad.advance_timeout){
-            clearTimeout($ad.advance_timeout);
-        }
-        $ad.advance_timeout = setTimeout($ad.advance_slide, duration);
+	$("#title").html($ad.slide.data("title"));
+	meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
+	    (Show_Author ? ("By " + $ad.slide.data("author")) : '');
+	$("#meta").html(meta_text);
+	$cdiv.show(transition, transition_time)
+	$ad.slide.show(transition, transition_time);
+	$ad.animate(ad_css, transition_time);
+	$cdiv.animate(cdiv_css, transition_time, 'swing', function(){
+	    fit_el_to_page("#" + $ad.slide.attr("id"));
+	});
+
+	if ($ad.advance_timeout){
+	    clearTimeout($ad.advance_timeout);
+	}
+	$ad.advance_timeout = setTimeout($ad.advance_slide, duration);
     }
 
     $ad.advance_slide = function(){
-        $ad.slide = $ad.slide.next();
-        if ($ad.slide.length === 0){
-            $ad.refresh_slides();
-        }else{
-            $ad.show_slide();
-        }
+	$ad.slide = $ad.slide.next();
+	if ($ad.slide.length === 0){
+	    $ad.refresh_slides();
+	}else{
+	    $ad.show_slide();
+	}
     }
     $ad.back_slide = function(){
-        $ad.slide = $ad.slide.prev();
-        if ($ad.slide.length === 0){
-            $ad.refresh_slides();
-        }else{
-            $ad.show_slide();
-        }
+	$ad.slide = $ad.slide.prev();
+	if ($ad.slide.length === 0){
+	    $ad.refresh_slides();
+	}else{
+	    $ad.show_slide();
+	}
     }
 
     $(document).on("click", '#advance_slide', $ad.advance_slide);
@@ -277,84 +288,84 @@ $(document).ready(function(){
 
     //Settings form
     document.settings_form = FormDialog(
-        "/settings",
-        null,
-        function(e, form){
-            e.preventDefault();
-            var data = $(form).serialize();
-            $.post(
-                $(form).attr("action"),
-                data,
-                function(){
-                    $("#_dialog_").dialog("close");
-                }
-            )
-        });
+	"/settings",
+	null,
+	function(e, form){
+	    e.preventDefault();
+	    var data = $(form).serialize();
+	    $.post(
+		$(form).attr("action"),
+		data,
+		function(){
+		    $("#_dialog_").dialog("close");
+		}
+	    )
+	});
 
     //DB init form
     document.initialize_db_form = FormDialog(
-        "/initialize",
-        //init function
-        function(form){
-            var $submit_btn = form.find("input[type=submit]");
-            $submit_btn.set_enabled(false);
-            form.find("#init_db").on("change", function(){
-                $submit_btn.set_enabled($(this).is(":checked"));
-            });
-        },
-        //submit function
-        function(e, form){
-            e.preventDefault();
-            var location = window.location;
-            var formdata = form.serialize();
-            $.post(
-                form.attr("action"),
-                formdata,
-                function(){
-                    window.location = location;
-                    window.location.reload();
-                }
-            );
-        });
+	"/initialize",
+	//init function
+	function(form){
+	    var $submit_btn = form.find("input[type=submit]");
+	    $submit_btn.set_enabled(false);
+	    form.find("#init_db").on("change", function(){
+		$submit_btn.set_enabled($(this).is(":checked"));
+	    });
+	},
+	//submit function
+	function(e, form){
+	    e.preventDefault();
+	    var location = window.location;
+	    var formdata = form.serialize();
+	    $.post(
+		form.attr("action"),
+		formdata,
+		function(){
+		    window.location = location;
+		    window.location.reload();
+		}
+	    );
+	});
 
     //Announcement editing
 
     document.edit_form  = FormDialog(
-        "/edit",
-        //init function
-        function(form){
-            form.on('change', 'input[name=fg_color],input[name=bg_color]', function(e){
-                //make the CKEDITOR reflect the changes.
-                var editor_doc = CKEDITOR.instances.announcement_content_textarea.document.getBody()["$"];
-                var $this = $(this);
-                if ($this.attr("name") === "fg_color"){
-                    editor_doc.style["color"] = $this.val();
-                }else{
-                    editor_doc.style["background-color"] = $this.val();
-                }
-            });
+	"/edit",
+	//init function
+	function(form){
+	    form.on('change', 'input[name=fg_color],input[name=bg_color]', function(e){
+		//make the CKEDITOR reflect the changes.
+		var editor_doc = CKEDITOR.instances.announcement_content_textarea.document.getBody()["$"];
+		var $this = $(this);
+		if ($this.attr("name") === "fg_color"){
+		    editor_doc.style["color"] = $this.val();
+		}else{
+		    editor_doc.style["background-color"] = $this.val();
+		}
+	    });
 
-            form.on('change', 'input[name=delete]', function(e){
-                var $delcb = $(this);
+	    form.on('change', 'input[name=delete]', function(e){
+		var $delcb = $(this);
 
-                if ($delcb.is(':checked')){
-                    form.find(':input:not([type=hidden],[name=delete],[type=submit])').each(function(i, el){
-                        $(el).set_enabled(false);
-                    });
-                }else{
-                    form.find(':input').each(function(i, el){
-                        $(el).set_enabled(true);
-                    });
-                }
-            });
+		if ($delcb.is(':checked')){
+		    form.find(':input:not([type=hidden],[name=delete],[type=submit])').each(function(i, el){
+			$(el).set_enabled(false);
+		    });
+		}else{
+		    form.find(':input').each(function(i, el){
+			$(el).set_enabled(true);
+		    });
+		}
+	    });
 
-            $.when(form.find(".ckedit").ckeditor().promise).then(
-                function(){
-                    form.find("input[type=color]").each(function(i, el){
-                        $(el).trigger("change");
-                    });
-                });
-        });
+	    $.when(form.find(".ckedit").ckeditor().promise).then(
+		function(){
+		    form.find("input[type=color]").each(function(i, el){
+			$(el).trigger("change");
+		    });
+		});
+	});
 
 
     //Buttons!
