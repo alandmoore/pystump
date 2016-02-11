@@ -1,16 +1,19 @@
+{% macro styleif(value, style_tag, url_value=False) %}
+  {% if value != None and value != '' %}{{style_tag}}: {% if not url_value %}{{value}}{% else %}url('{{ url_for('uploads', filename=value)}}'){% endif %};{% else %}{% endif %}
+{% endmacro %}
+
 {% for a in announcements: %}
+  {% set bg_mode = a.get("bg_image_mode") %}
   <div
      id="ann-{{a.get("id")}}"
      class='announcement_display'
      data-title = "{{a.get("title")|striptags|escape}}"
      data-id={{a.get("id")|int}}
      data-duration={{a.get("duration")|int}}
-     data-fg={{a.get("fg_color")}}
-     data-bg={{a.get("bg_color")}}
+     style= "{{styleif(a.get("fg_color"), "color")}} {{styleif(a.get("bg_color"), "background-color")}} {{styleif(a.get("bg_image"), "background-image", True)}} {% if bg_mode == 'stretch' %}background-size: 100%;{% elif bg_mode in ('left', 'right', 'center') %} background-position: {{bg_mode}}; background-repeat: no-repeat; bg-size: auto;{% elif bg_mode == 'tile'%}background-size: auto; background-repeat: repeat;{% endif %}"
      data-author="{{a.get("author")}}"
      data-updated="{{a.get("updated")}}"
-     data-bg_image="{{a.get("bg_image") and url_for('uploads', filename=a.get("bg_image")) or ''}}"
-     data-bg_image_mode="{{a.get("bg_image_mode")}}"
+     data-transition="{{a.get("transition") or ''}}"
      >
      {{a.get("content")}}
   </div>

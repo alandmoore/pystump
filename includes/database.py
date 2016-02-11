@@ -4,6 +4,7 @@ Database model for PyStump
 
 import sqlite3
 from .util import debug, string_to_datetime
+from .lookups import transitions, bg_image_modes
 
 import os
 
@@ -123,8 +124,11 @@ class Database:
         max_duration = self.get_setting_value("Max Duration")
         min_duration = self.get_setting_value("Min Duration")
         bg_image_mode = formdata.get("bg_image_mode")
-        if bg_image_mode not in ('stretch', 'tile', 'center', 'left', 'right'):
-            bg_image_mode = 'stretch'
+        if bg_image_mode not in bg_image_modes:
+            bg_image_mode = bg_image_mode[0]
+        transition = formdata.get("transition")
+        if transition and transition not in transitions:
+            transition = ''
 
         qdata = {
             "title": formdata.get("title"),
@@ -142,27 +146,32 @@ class Database:
             "fg_color": formdata.get("fg_color"),
             "bg_color": formdata.get("bg_color"),
             "bg_image": formdata.get("bg_image"),
-            "bg_image_mode": bg_image_mode
+            "bg_image_mode": bg_image_mode,
+            "transition": transition
         }
         debug(qdata)
         if formdata.get("id"):
             debug("UPDATE query, id={}".format(formdata.get("id")))
             qdata["id"] = formdata.get("id")
-            query = """UPDATE announcements SET title=:title, content=:content,
-            author = :author, activate = :activate, expire = :expire,
-            duration=MAX(MIN(:duration, :max_duration), :min_duration),
-            fg_color=:fg_color, bg_color=:bg_color, bg_image=:bg_image,
-            bg_image_mode=:bg_image_mode, updated=DATETIME('now', 'localtime')
+            query = """
+            UPDATE announcements
+                SET title=:title, content=:content,
+                author = :author, activate = :activate, expire = :expire,
+                duration=MAX(MIN(:duration, :max_duration), :min_duration),
+                fg_color=:fg_color, bg_color=:bg_color, bg_image=:bg_image,
+                bg_image_mode=:bg_image_mode, transition=:transition,
+                updated=DATETIME('now', 'localtime')
             WHERE id=:id"""
         else:  # insert query
             debug("INSERT query")
             query = """
             INSERT INTO announcements(
                 title, content, author, activate, expire, duration, fg_color,
-                bg_color, bg_image, bg_image_mode, updated)
+                bg_color, bg_image, bg_image_mode, transition, updated)
             VALUES (:title, :content, :author, :activate, :expire,
             MAX(MIN(:duration, :max_duration), :min_duration), :fg_color,
-            :bg_color, :bg_image, :bg_image_mode, DATETIME('now', 'localtime'))
+            :bg_color, :bg_image, :bg_image_mode, :transition,
+            DATETIME('now', 'localtime'))
             """
         res = self.query(query, qdata, False)
         debug(res)

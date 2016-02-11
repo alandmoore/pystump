@@ -23,6 +23,14 @@
   <label>Duration <span class="note">(seconds)</span></label>
   <input name="duration" type="number" min={{settings.get("Min Duration")[0]}} max={{settings.get("Max Duration")[0]}} value="{{announcement.get("duration", settings.get("Min Duration")[0])}}" />
  </li>
+ <li><label>Transition</label>
+   <SELECT name="transition">
+     <option value=''>None</option>
+     {% for transition in lookups.transitions %}
+       <option value="{{transition}}" {% if transition == announcement.get("transition")%}selected{% endif %}>{{transition}}</option>
+{% endfor %}
+     </SELECT>
+ </li>
  <li>
   <label>Foreground Color</label>
   <input name="fg_color" type="color" value="{{announcement.get("fg_color", "#000000")}}" />
@@ -49,7 +57,7 @@
  <li>
   <label>BG Image mode</label>
   <SELECT name="bg_image_mode" >
-   {% for option in ('stretch', 'tile', 'center', 'right', 'left') %}
+   {% for option in lookups.bg_image_modes %}
    <OPTION value={{option}} {% if announcement.get('bg_image_mode') == option %}selected{% endif %}>{{option}}</OPTION>
    {% endfor %}
   </SELECT>

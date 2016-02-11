@@ -24,7 +24,7 @@ from includes.database import Database
 from includes.auth.authenticator import Authenticator, dummy_auth
 from includes.auth.ad_auth import AD
 from includes.auth.edirectory_auth import EDirectory
-
+from includes import lookups
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object("config")
@@ -124,6 +124,7 @@ def edit_announcement(announcement_id=None):
     return render_template(
         "edit.jinja2",
         announcement=announcement,
+        lookups=lookups,
         **g.std_args
     )
 
