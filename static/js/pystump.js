@@ -36,8 +36,8 @@ function fit_el_to_page(el) {
         $(el).css("font-size", font_size+"px");
         //console.log($(el).attr("id"), "W: ", $(el)[0].scrollWidth, target_width,"; H:",  $(el)[0].scrollHeight, target_height, '; F: ', font_size );
     }
-    $(el).width(target_width);
-    $(el).height(target_height);
+    $(el).width("100%");
+    $(el).height("100%");
 }
 
 // shortcut to disable or enable form elements
