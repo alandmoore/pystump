@@ -205,7 +205,7 @@ var AnnouncementDisplay = function(el, source_url){
     $ad.show_slide = function(){
         var duration = parseInt($ad.slide.data("duration"), 10) * 1000;
         var transition = $ad.slide.data("transition");
-        var transition_time = 500; // milliseconds
+        var transition_time = parseInt(Transition_Time, 10) || 500; // milliseconds
 
         //set title
         $("#title").html($ad.slide.data("title"));
