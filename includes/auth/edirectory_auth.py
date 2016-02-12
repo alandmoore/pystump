@@ -5,82 +5,125 @@
 import ldap3 as ldap
 from .authenticator import auth_backend
 
+
 class EDirectory(auth_backend):
-    def __init__(self, host='localhost', port="389", bind_dn="", bind_pw="", require_group = None, ssl=False):
+    def __init__(
+        self,
+        host='localhost',
+        port="389",
+        base_dn='',
+        bind_dn="",
+        bind_pw="",
+        require_group=None,
+        ssl=False
+    ):
         """Contructor for the connection.  Assumes plaintext LDAP"""
         self.error = ""
         self.host = host
+        self.base_dn = base_dn
         self.bind_dn = bind_dn
         self.bind_pw = bind_pw
-        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, False)
         self.authenticated_user = None
         self.authenticated_dn = None
-        self.authsource = "Novell eDirectory on " + host
+        self.authsource = "Novell eDirectory on {}".format(host)
         self.require_group = require_group
         self.ldap_url = ''.join([
             (ssl and "ldaps://") or "ldap://",
             self.host,
             (port and ":{}".format(port)) or ''
         ])
-        #attempt to connect to the server
-        try:
-            self.con = ldap.initialize(self.ldap_url)
-            if ssl:
-                self.con.start_tls_s()
-            self.con.simple_bind_s(self.bind_dn, self.bind_pw)
-        except ldap.INVALID_CREDENTIALS:
+
+        # attempt to connect and bind to the server
+        self.server = ldap.Server(self.ldap_url, use_ssl=ssl)
+        self.con = ldap.Connection(self.server, user=self.bind_dn, password=self.bind_pw)
+        self.bound = self.con.bind()
+        if not self.bound:
             self.error = "Could not bind to server {}.".format(self.host)
             if self.bind_dn is not None:
                 self.error += "as %s" % self.bind_dn
                 self.con = False
-        except ldap.SERVER_DOWN:
-            self.error = "Could not make connection to {}.".format(self.host)
-    def check (self, username, password):
-        """Given a simple username and password, return true or false if the user is authenticated"""
-        if self.con:
-            res = self.con.search_s("", ldap.SCOPE_SUBTREE, "uid=%s" % username)
-        else:
-            return False
-        #For some stupid reason, ldap will bind successfully with a valid username and a BLANK PASSWORD, so we have to disallow blank passwords.
-        if not password:
-            self.error = "Invalid credentials: Login as %s failed" % username
+
+    def check(self, username, password):
+        """Check a username and password to authenticate a user.
+
+        Also ensure that the required group memberships exits.
+        Return true if the auth succeeds or false if not.
+        """
+        if not self.con:
+            self.error = "No server connection"
             return False
 
-        if not res:
-            self.error = "No such user %s" % username
+        # For some stupid reason, ldap will bind successfully
+        # with a valid username and a BLANK PASSWORD,
+        # so we have to disallow blank passwords.
+
+        if not password:
+            self.error = (
+                "Invalid credentials: Login as {} failed".format(username)
+            )
             return False
-        else:
-            dn = res[0][0]
-            #print (dn)
-            try:
-                self.con.simple_bind_s(dn, password)
-                self.authenticated_user = username
-                self.authenticated_dn = dn
-            except:
-                self.error = "Invalid credentials: Login as %s failed" % username
-                return False
+
+        success = self.con.search(
+            search_base=self.base_dn,
+            search_filter="(uid={})".format(username),
+            search_scope=ldap.SUBTREE
+        )
+
+        if not success:
+            self.error = "Search for {} failed".format(username)
+            return False
+
+        user_dn = self.con.response[0].get("dn")
+
+        if not user_dn:
+            self.error = "No such user {}.".format(username)
+            return False
+
+        try:
+            self.con = ldap.Connection(
+                self.server, user=user_dn, password=password)
+            self.con.bind()
+            self.authenticated_user = username
+            self.authenticated_dn = user_dn
+        except ldap.LDAPException:
+            self.error = (
+                "Invalid credentials: Login as {} failed".format(username)
+            )
+            return False
+
+        # If you've gotten to this point, the username/password checks out
         if self.require_group and not (self.in_group(self.require_group)):
-            self.error = "Permission Denied"
+            self.error = "Permission denied: not in required group {}".format(
+                self.require_group
+            )
             return False
-        return True
+
+        return True  # All tests passed!
 
     def info_on(self, username):
         """Returns ldap information on the given username"""
-        if self.con:
-            res = self.con.search_s("", ldap.SCOPE_SUBTREE, "uid=%s" % username)
-        else:
+        if not self.con:
             return False
 
-        if not res:
-            self.error = "No such user %s" % username
+        success = self.con.search(
+            self.base_dn,
+            "(uid={})".format(username),
+            search_scope=ldap.SUBTREE,
+            attributes=ldap.ALL_ATTRIBUTES
+        )
+        if not success:
+            self.error = "No such user {}".format(username)
             return False
 
-        return res[0][1]
+        return self.con.response[0]['attributes']
 
     def get_auth_user_fullname(self):
         if self.authenticated_user:
             info = self.info_on(self.authenticated_user)
-            name = "{} {}".format(info.get("givenName", [''])[0], info.get("sn", [''])[0])
+            name = "{} {}".format(
+                info.get("givenName", [''])[0],
+                info.get("sn", [''])[0]
+            )
             return name
         return ""
 
@@ -92,7 +135,19 @@ class EDirectory(auth_backend):
         return None
 
     def in_group(self, group):
-        group_res = self.con.search_s("", ldap.SCOPE_SUBTREE, "cn={}".format(group))
-        if group_res and self.authenticated_dn in group_res[0][1].get("member", []):
-            return True
+        if not self.con:
+            self.error = "No connection"
+            return False
+
+        group_res = self.con.search(
+            self.base_dn,
+            "(cn={})".format(group),
+            search_scope=ldap.SUBTREE
+        )
+        if group_res:
+            group_dn = self.con.response[0].get("dn")
+            if group_dn in self.info_on(
+                self.authenticated_user
+            ).get("groupMembership", []):
+                return True
         return False
