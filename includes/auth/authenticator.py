@@ -3,6 +3,7 @@ Defines a generic authenticator object which will take a
 user/password pair and return authentication status and user details.
 """
 
+
 class Authenticator:
 
     def __init__(self, backend, **kwargs):
@@ -26,7 +27,8 @@ class auth_backend:
     authenticated = False
 
     def __init__(self, **kwargs):
-        # This function should connect to authentication sources and configure basic settings
+        # This function should connect to authentication sources
+        # and configure basic settings
         pass
 
     def check(self, username=None, password=None):
@@ -51,6 +53,7 @@ class auth_backend:
         # If there's no email available, it returns an empty string
 
         pass
+
 
 class dummy_auth(auth_backend):
     """

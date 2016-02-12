@@ -83,23 +83,25 @@ var FormDialog = function(url, init_function, submit_function){
             var date_display_fmt = "m/d/yy";
             var time_display_fmt = "h:mm tt";
 
-            $fd.form.find(":input[type=datetime], :input[type=date], :input[type=time]").each(
+            $fd.form.find(":input.datepicker").each(
                 function(i, el){
                     var $input = $(el);
-                    var widget = $input.attr("type") + "picker";
+                    var widget = $input.data("widget") + "picker";
                     var altfield_id = $input.data("altfield");
                     var dateval = $input.val()? new Date($input.val()) : null;
 
                     $input[widget]({
                         altField: "#" + altfield_id,
                         altFormat: "yy-mm-dd",
-                        altTimeFormat: "HH:mm",
+                        altTimeFormat: "HH:mm:ssz",
                         altSeparator: "T",
                         altFieldTimeOnly: false,
                         timeFormat: time_display_fmt,
                         dateFormat: date_display_fmt,
                         constrainInput: true,
-                        parse: 'loose'
+                        showSecond: false,
+                        showTimezone: false
+                        //parse: 'loose'
                     });
 
                     $input[widget]('setDate', dateval);

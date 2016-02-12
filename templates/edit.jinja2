@@ -11,12 +11,12 @@
  </li>
  <li>
   <label>Activation Date</label>
-  <input name="activate-display" data-altfield="activate_datetime_input" type="datetime" value="{{announcement.get("activate") and announcement['activate'].isoformat() or ''}}" />
+  <input name="activate-display" data-altfield="activate_datetime_input" class="datepicker" data-widget="datetime" value="{{announcement.get("activate") and announcement['activate'].isoformat() or ''}}" />
   <input id="activate_datetime_input" name="activate" type="hidden" value="{{announcement.get("activate", '')}}" />
  </li>
  <li>
   <label>Expiration Date</label>
-  <input name="expire-display" data-altfield="expire_datetime_input" type="datetime" value="{{announcement.get("expire") and announcement['expire'].isoformat() or ''}}" />
+  <input name="expire-display" data-altfield="expire_datetime_input" class="datepicker" data-widget="datetime" value="{{announcement.get("expire") and announcement['expire'].isoformat() or ''}}" />
   <input id="expire_datetime_input" name="expire" type="hidden" value="{{announcement.get("expire", '')}}" />
  </li>
  <li>

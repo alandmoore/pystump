@@ -10,6 +10,9 @@ from werkzeug import secure_filename
 import uuid
 import base64
 
+from dateutil.parser import parse
+
+
 def debug(*messages):
     if g.debug:
         sys.stderr.write("\n".join([str(m) for m in messages]))
@@ -22,7 +25,16 @@ def string_to_datetime(datestring):
     if not datestring:
         return None
 
+    if type(datestring) == bytes:
+        datestring = datestring.decode("utf-8")
+
+    return parse(datestring)
+
     formats = (
+        "%Y-%m-%dT%H:%M:%S%z",
+        "%Y-%m-%dT%H:%M%z",
+        "%Y-%m-%d %H:%M:%S%z",
+        "%Y-%m-%d %H:%M%z",
         "%Y-%m-%d %H:%M",
         "%Y-%m-%dT%H:%M",
         "%Y-%m-%d %H:%M:%S",
@@ -31,17 +43,26 @@ def string_to_datetime(datestring):
         "%m/%d/%Y %I:%M",
         "%-m/%-d/%Y %-I:%M"
     )
+    errs = []
 
     for f in formats:
         try:
             dt = datetime.strptime(datestring, f)
         except ValueError:
-            print("{} doesn't match {}".format(datestring, f))
+            errs.append("{} doesn't match {}\n".format(datestring, f))
             continue
         else:
             return dt
-
+    debug("\n".join(errs))
     return None
+
+
+def datetime_to_string(dt):
+
+    if type(dt) is not datetime:
+        return ''
+
+    return dt.strftime("%Y-%m-%dT%H:%M:%S%z")
 
 
 def file_allowed(filename, allowed_extensions):

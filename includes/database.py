@@ -3,12 +3,18 @@ Database model for PyStump
 """
 
 import sqlite3
-from .util import debug, string_to_datetime
+from .util import (
+    debug, string_to_datetime, datetime_to_string
+)
 from .lookups import transitions, bg_image_modes
 
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+
+# fix sqlite3's broken timestamp parsing
+sqlite3.register_converter('timestamp', string_to_datetime)
 
 
 class Database:
@@ -48,7 +54,7 @@ class Database:
         """
         Creates a fresh, empty database.
         """
-        with open(os.path.join(BASE_DIR,"sql/schema.sql"), 'r') as sqlfile:
+        with open(os.path.join(BASE_DIR, "sql/schema.sql"), 'r') as sqlfile:
             self.cu().executescript(sqlfile.read())
         with open(os.path.join(BASE_DIR, "sql/default.sql"), 'r') as sqlfile:
             self.cu().executescript(sqlfile.read())
@@ -109,7 +115,6 @@ class Database:
             return {}
         query = """SELECT * FROM announcements WHERE id = ?"""
         res = self.query(query, (id,))
-        print(res)
         return len(res) > 0 and res[0] or {}
 
     ###########
