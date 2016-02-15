@@ -33,8 +33,8 @@ UPLOAD_FOLDER = "uploads"
 # Login backend.  Valid values are "dummy", "AD", or "eDirectory"
 AUTH_BACKEND = "dummy"
 
-# Configuration values for LDAP
-LDAP_CONFIG = {
+# Configuration values for Auth backend
+AUTH_CONFIG = {
         "host" : None, #The IP or hostname of the LDAP server
         "port" : None, #The Port for LDAP
         "base_dn" : None, #The DN to start searching for login names

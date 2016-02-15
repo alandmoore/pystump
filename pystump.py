@@ -24,6 +24,7 @@ from includes.database import Database
 from includes.auth.authenticator import Authenticator, dummy_auth
 from includes.auth.ad_auth import AD
 from includes.auth.edirectory_auth import EDirectory
+from includes.auth.sqlite_auth import SQLiteAuth
 from includes import lookups
 
 app = Flask(__name__, instance_relative_config=True)
@@ -136,12 +137,15 @@ def login_page():
 
     error = None
     username = None
-    authenticators = {"AD": AD, "dummy": dummy_auth, "eDirectory": EDirectory}
+    authenticators = {
+        "AD": AD, "dummy": dummy_auth,
+        "eDirectory": EDirectory, "sqlite": SQLiteAuth
+    }
     if request.method == 'POST':
         # attempt to authenticate
         auth = Authenticator(
             authenticators[app.config.get("AUTH_BACKEND")],
-            **app.config.get("LDAP_CONFIG")
+            **app.config.get("AUTH_CONFIG")
         )
         if auth.check(request.form['username'], request.form['password']):
             session['auth'] = True
