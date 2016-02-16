@@ -10,9 +10,9 @@ Requirements
 
 PyStump should, in theory, run on any platform that can run Python; in practice, it's developed and tested on Linux (Arch and Debian), and not routinely tested on other platforms.
 
-It should also, in theory, work with any reasonably standards-compliant browser.  In practice, it's tested against the Chromium web browser and sometimes Firefox.  There are some known bugs in Firefox.
+It should also, in theory, work with any reasonably standards-compliant browser.  In practice, it's tested against Firefox and sometimes Chromium.
 
-Before you can run PyStump, you need to install the prerequisites, Python and Flask.
+Before you can run PyStump, you need to install Python and the dependencies listed in requirements.txt
 
 Python
 ------
@@ -21,24 +21,10 @@ Python 3.x preferred; 2.x may work, though you can probably expect bugs if your 
 
 Please see http://www.python.org/getit/ for instructions on installing Python on your operating system.  Linux and OSX users should be aware that Python is probably already installed on your system; make sure it's a new enough version, though.
 
-Flask
------
+Dependencies
+------------
 
-Flask 0.1.0 or higher recommended.
-
-Please see instructions at http://flask.pocoo.org/docs/installation/ for installing flask on your operating system.  Many Linux distributions also provide flask via the package management system, but make sure the version matches the recommendation above.  If it's older, you can try installing Flask using pip or easy_install.
-
-Markdown
---------
-
-The python Markdown library is required.
-
-See http://pythonhosted.org/Markdown/ for details on installing this.
-
-LDAP
-----
-
-Python-LDAP is required for AD/eDirectory authentication.  For Python3, this should be the Python3-LDAP library.
+Dependencies are listed in requirements.txt.  These should probably be installed using pip.
 
 
 Optional: SQLite3
@@ -50,67 +36,103 @@ You don't need SQLite installed to run PyStump (Python comes with the necessary 
 Setup
 =====
 
+These instructions are for setting up PyStump on a unix-like OS using flask's built-in webserver.  It's probably not suitable for large-scale deployment.
+
 - Download the latest PyStump source from https://github.com/alandmoore/pystump/archive/master.zip and extract it to a directory where you have read/write access (e.g. your home directory or Documents folder).  Alternately, if you have git installed and know how to use it, you can do::
 
     git clone http://github.com/alandmoore/pystump
 
-- The user who will be running PyStump needs read/write access to the database file and the directory it's in.  If this isn't the case, edit the pystump.conf file and point the database file location to somewhere where the user can read/write.
+- Create an instance config.  This will contain values for your particular installation and won't be overwritten if you update (using ``git pull``, e.g.)::
 
-- Launch pystump.py with Python.
+    cd pystump
+    mkdir instance && cp config.py instance/
+
+- The user who will be running PyStump needs read/write access to the database file and the directory it's in.  If this isn't the case, edit the ``instance/config.py`` file and point the database file location to somewhere where the user can read/write.
+
+- Create an uploads folder.  This needs to be somewhere that your Pystump user can write.  Add the path to this folder to ``instance/config.py``
+
+- Create a directory for the virtual environment and install the dependencies::
+
+    mkdir env
+    virtualenv -p $(which python3) env
+    env/bin/pip install -r requirements.txt
+
+- If you'd like PyStump to be available outside of localhost, edit ``instance/config.py`` and uncomment ``HOST = "0.0.0.0"``.
+
+- Launch pystump.py with Python::
+
+    env/bin/python pystump.py
 
 - Open a web browser and point it to http://localhost:5000.  You'll see an error about the database file needing to be initialized, so just click "Initialize".
 
-  - You should now find yourself looking at an empty PyStump reference. Click "New Announcement" and start creating announcement slides!
+- You should now find yourself looking at an empty PyStump reference. Click "New Announcement" and start creating announcement slides!
+
 
 
 Advanced
 --------
 
-Running as a Server
+Running on a Server
 ~~~~~~~~~~~~~~~~~~~
 
-There are many ways you can set up PyStump as a server, so that multiple devices on a LAN can access the same instance.  Note that it is not recommended to run this on a public server, as it hasn't been designed for that level of security.
+If you want to run PyStump on a lot of screens and give access to a lot of users, it's probably better to install it behind a real webserver.
 
-The following demonstrates one possible setup on a server running Debian.  Run these commands as root::
+Like any Flask or WSGI application, you can run PyStump behind a web server like Apache or Nginx.  Check out http://flask.pocoo.org/docs/deploying/ for various options to deploy Flask applications behind a server like this.  Warning:  this takes a bit of tweaking and server expertise.
 
-    # Install prerequisites
+The included ``pystump.wsgi`` file can be used to run PyStump behind Apache using mod_wsgi.  Simply add a file like this to your Apache sites configuration::
 
-    aptitude install python python-flask git python-ldap python-markdown
+    WSGIScriptAlias /pystump /path/to/pystump/pystump.wsgi
+    WSGIDaemonProcess /pystump user=myuser group=users python-path=/path/to/pystump home=/path/to/pystump
 
-    # Create the user to run pystump
+    # Uncomment for debugging
+    # SetEnv PYSTUMP_DEBUG 1
 
-    useradd -d /opt/pystump -mr
-    su pystump
-    cd /opt/pystump
+    <Directory /srv/www/it-announcements>
+        Require all granted
+    </Directory>
 
-    # Download the software
+You'll need to change the paths and username to match your server.
 
-    git clone http://github.com/alandmoore/pystump
+Make sure the database file and uploads directory are accessible and writable by the user that is running Apache (e.g. ``www-data`` on Debian or Ubuntu).
 
-    # Uncomment the appropriate line in pystump.conf to enable remote access:
+Configuring Authentication
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    sed -i 's/#HOST/HOST/' pystump /pystump.conf
+PyStump supports multiple modes of authentication:
 
-    # exit back to root
+- Microsoft Active Directory
+- Novell eDirectory
+- SQLite tables
 
-    exit
+Active Directory and eDirectory have similar configurations:
 
-    # Add a line to /etc/rc.local to run the script at boot
+- In your ``instance/config.py``, set ``AUTH_BACKEND`` to "AD" or "eDirectory".
+- Now set ``AUTH_CONFIG`` to a dictionary with these keys:
 
-    echo 'cd /opt/pystump/pystump && python pystump.py &' >> /etc/rc.local
+  - ``host``: The IP or hostname of the AD/eDirectory server
+  - ``port``: The port used for LDAP access, default 389 for plaintext or 636 for SSL.
+  - ``base_dn``: The base DN in which you'll search for user accounts.
+  - ``bind_dn_username``: This is a username for a user that you can bind to the directory with. This should just be an account with limited permissions.
+  - ``bind_dn_password``: The password for the bind DN user.
+  - ``require_group``: If you want to restrict login to certain users, create a group in your directory and specify it here.
+  - ``ssl``: True or False to use SSL.
 
-    # Go ahead and run the command so you don't need to reboot to see if it worked:
+For SQLite Auth the configuration is simpler:
 
-    cd /opt/pystump/pystump && python pystump.py &
+- In ``instance/config.py`` set ``AUTH_BACKEND`` to "sqlite"
+- Now set ``AUTH_CONFIG`` to a dictionary with ``dbfile`` set to the path to the sqlite file.  You can use the same file you use for announcments, or a different file.
+- Optionally, you can specify any of these options (useful if you have a sqlite file used for other things):
 
-Running behind Apache
-~~~~~~~~~~~~~~~~~~~~~
+  - ``table``: The name of the table holding users.  Default is "users".
+  - ``login``: The name of the field holding user login names.  Default is "login".
+  - ``password``: The name of the field holding the user's (encrypted and salted) password.  Default is "password".  Passwords are encrypted using Unix ``crypt`` from the standard library ``crypt`` module.
+  - ``salt``:  The name of the field holding the salt value.  Default is "salt".
+  - ``name``:  The name of the field containing the user's full name.  Default is "name".
+  - ``email``: The name of the field containing the user's email address.  Default is "email".
 
-Like any Flask or WSGI application, you can run PyStump behind a web server like Apache or Nginx.  Check out http://flask.pocoo.org/docs/deploying/ for various options to deploy Flask applications like OH behind a server like this.  Warning:  this takes a bit of tweaking and server expertise.
+Currently there's no interface for creating sqlite users; to do this, you'll need to open a python shell in the PyStump directory and run this::
 
-Running with a Python virtual environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If your OS doesn't have the latest version of Flask easily available, you can set up a Python virtual environment and get the latest Flask using pip.  This is the recommended way to run Flask, but it requires a bit of extra setup and effort and may not be entirely necessary for PyStump, but if you're using (for example) a Linux like Debian or CentOS with conservative release cycles, the repository version of Flask may not be new enough.
-
-You can learn more about Python virtual environments at http://www.virtualenv.org/en/latest/.
+    from includes.auth.sqlite_auth import SQLiteAuth
+    sqlauth = SQLiteAUth("/path/to/your/dbfile")  # add any keyword options here too
+    sqlauth.add_user("LoginName", "Plaintext Password", "user's full name", "user's email address")
+    # repeat previous line for each user you need to add...
