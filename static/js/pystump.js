@@ -201,6 +201,8 @@ var AnnouncementDisplay = function(el, source_url){
             function(data){
                 $ad.html(data);
                 $ad.init();
+            }).fail(function(){
+                setTimeout($ad.refresh_slides, 10000);
             });
     }
 
