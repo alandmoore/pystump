@@ -9,13 +9,14 @@ from datetime import datetime
 from werkzeug import secure_filename
 import uuid
 import base64
+from pprint import pformat
 
 from dateutil.parser import parse
 
 
 def debug(*messages):
     if g.debug:
-        sys.stderr.write("\n".join([str(m) for m in messages]))
+        sys.stderr.write(pformat("\n".join([str(m) for m in messages])))
     else:
         pass
 

@@ -4,7 +4,7 @@ Database model for PyStump
 
 import sqlite3
 from .util import (
-    debug, string_to_datetime, datetime_to_string
+    debug, string_to_datetime
 )
 from .lookups import transitions, bg_image_modes
 
