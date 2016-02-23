@@ -13,10 +13,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
-# fix sqlite3's broken timestamp parsing
-sqlite3.register_converter('timestamp', string_to_datetime)
-
-
 class Database:
 
     def __init__(self, dbfile):
@@ -39,6 +35,12 @@ class Database:
         return self.cu_obj
 
     def query(self, query, data=None, return_results=True):
+        # fix sqlite3's broken timestamp parsing
+        # reregister this every query, hopefully to workaround a bug
+        # on some versions of python (observed on 2.7.9) where sqlite3
+        # "forgets" registered converters
+        sqlite3.register_converter('timestamp', string_to_datetime)
+
         if data is None:
             self.cu().execute(query)
         else:
