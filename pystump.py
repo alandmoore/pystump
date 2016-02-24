@@ -59,7 +59,11 @@ def before_request():
     else:
         g.db_corrupt = False
         settings = g.db.get_settings()
-        g.std_args = {"settings": settings, "session": session}
+        g.std_args = {
+            "settings": settings,
+            "session": session,
+            "site_name": app.config.get("SITE_NAME", 'PyStump')
+        }
 
 
 @app.route("/")
@@ -156,7 +160,12 @@ def login_page():
         else:
             username = request.form['username']
             error = "Login Failed"
-    return render_template("login.jinja2", error=error, username=username)
+    return render_template(
+        "login.jinja2",
+        error=error,
+        username=username,
+        site_name=app.config.get("SITE_NAME")
+    )
 
 
 @app.route("/logout")

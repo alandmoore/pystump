@@ -25,6 +25,8 @@ SECRET_KEY = "this is a bad secret key and you need to change it"
 
 UPLOAD_FOLDER = "uploads"
 
+# Give your site a name
+SITE_NAME = "PyStump"
 
 ######################
 # LDAP Configuration #
