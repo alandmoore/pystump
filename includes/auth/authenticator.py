@@ -4,7 +4,7 @@ user/password pair and return authentication status and user details.
 """
 
 
-class Authenticator:
+class Authenticator(object):
 
     def __init__(self, backend, **kwargs):
         self.backend = backend(**kwargs)
@@ -22,7 +22,7 @@ class Authenticator:
         return self.backend.is_admin
 
 
-class auth_backend:
+class auth_backend(object):
     """
     This is a base class for an auth backend.
     Any auth backend should subclass it and override its functions.
