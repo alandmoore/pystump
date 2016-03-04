@@ -23,8 +23,10 @@ class SQLiteAuth(auth_backend):
             password_field='password',
             salt_field='salt',
             name_field='name',
-            email_field='email'
+            email_field='email',
+            admins=None
     ):
+        super(SQLiteAuth, self).__init__(admins=admins)
         self.dbfile = dbfile
         self.cx_obj = None
         self.schema = {
@@ -121,6 +123,11 @@ class SQLiteAuth(auth_backend):
         self.auth_user = username
         self.auth_user_name = user[self.schema["name"]]
         self.auth_user_email = user[self.schema["email"]]
+
+        # check for admin rights
+        for principal in self.admins:
+            if username.lower() == principal.lower():
+                self.is_admin = True
 
         return True
 

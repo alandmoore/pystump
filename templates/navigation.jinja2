@@ -16,8 +16,10 @@
 {% if session.get("auth") %}
 <li id="link_tools"><a href="#">Tools</a>
   <ul>  <li id="logout"><a href="{{url_for("logout")}}">Logout</a></li>
-  <li id="link_settings"><a href="#">Settings</a></li>
-  <li id="link_initialize"><a href="#">Initialize Database</a></li>
+    {% if session.get("is_admin") %}
+    <li id="link_settings"><a href="#">Settings</a></li>
+    <li id="link_initialize"><a href="#">Initialize Database</a></li>
+    {% endif %}
 </ul>
 </li>
 {% else %}

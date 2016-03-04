@@ -116,6 +116,7 @@ Active Directory and eDirectory have similar configurations:
   - ``bind_dn_password``: The password for the bind DN user.
   - ``require_group``: If you want to restrict login to certain users, create a group in your directory and specify it here.
   - ``ssl``: True or False to use SSL.
+  - ``admins``: This is a list or tuple of group and/or user names that identify admin users.  If left blank, everyone is an admin user.
 
 For SQLite Auth the configuration is simpler:
 
@@ -129,6 +130,7 @@ For SQLite Auth the configuration is simpler:
   - ``salt``:  The name of the field holding the salt value.  Default is "salt".
   - ``name``:  The name of the field containing the user's full name.  Default is "name".
   - ``email``: The name of the field containing the user's email address.  Default is "email".
+  - ``admins``: This is a list or tuple of usernames who are admin users.  If left blank, all users are admins.
 
 Currently there's no interface for creating sqlite users; to do this, you'll need to open a python shell in the PyStump directory and run this::
 
@@ -136,3 +138,9 @@ Currently there's no interface for creating sqlite users; to do this, you'll nee
     sqlauth = SQLiteAUth("/path/to/your/dbfile")  # add any keyword options here too
     sqlauth.add_user("LoginName", "Plaintext Password", "user's full name", "user's email address")
     # repeat previous line for each user you need to add...
+
+
+Admin Users
+~~~~~~~~~~~
+
+If you configure the "admins" option on your authentication backend, only users in the admins list (or users in groups in that list) will be able to initialize the databse or adjust the settings.  If you leave the setting blank, everyone will be an admin and be able to do those things.

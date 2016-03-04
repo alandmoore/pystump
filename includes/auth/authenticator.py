@@ -18,6 +18,9 @@ class Authenticator:
     def get_user_email(self):
         return self.backend.get_auth_user_email()
 
+    def is_admin(self):
+        return self.backend.is_admin
+
 
 class auth_backend:
     """
@@ -29,13 +32,17 @@ class auth_backend:
     def __init__(self, **kwargs):
         # This function should connect to authentication sources
         # and configure basic settings
-        pass
+
+        # get the admin users/groups.  If this isn't set,
+        # everyone is an admin.
+
+        self.admins = kwargs.get("admins", [])
+        self.is_admin = not self.admins
 
     def check(self, username=None, password=None):
         # This function should return a boolean value
         # True if the credentials check out, False if not
         # it should also set self.authenticated accordingly
-
         pass
 
     def get_auth_user_fullname(self):
@@ -63,14 +70,20 @@ class dummy_auth(auth_backend):
     And give them full privileges.
     """
     def __init__(self, **kwargs):
+        super(dummy_auth, self).__init__(**kwargs)
         self.username = None
 
     def check(self, username=None, password=None):
+        auth = False
         if username is not None and password is not None and password != '':
             self.authenticated = True
             self.username = username
-            return True
-        return False
+            auth = True
+
+        if username in self.admins:
+            self.is_admin = True
+
+        return auth
 
     def get_auth_user_fullname(self):
         return self.username

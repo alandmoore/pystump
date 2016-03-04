@@ -22,8 +22,7 @@ from flask import (
 from includes.util import file_allowed, save_file, delete_file
 from includes.database import Database
 from includes.auth.authenticator import Authenticator, dummy_auth
-from includes.auth.ad_auth import AD
-from includes.auth.edirectory_auth import EDirectory
+from includes.auth.ldap_auth import AD, EDirectory
 from includes.auth.sqlite_auth import SQLiteAuth
 from includes import lookups
 
@@ -32,7 +31,7 @@ app.config.from_object("config")
 app.config.from_pyfile("config.py", silent=True)
 
 
-# Wrapper to secure callbacks
+# Wrappers to secure callbacks
 
 def login_required(view_function):
     """Redirect to the login page if the session is not authenticated"""
@@ -43,6 +42,19 @@ def login_required(view_function):
 
         if not session.get("auth"):
             return redirect(url_for("login_page", next=request.url))
+        return view_function(*args, **kwargs)
+    return decorated_function
+
+
+def admin_required(view_function):
+    """Redirect to the login page if the session is not authenticated"""
+
+    @wraps(view_function)
+    def decorated_function(*args, **kwargs):
+        """Function wrapped by login_required."""
+
+        if not session.get("is_admin"):
+            abort(403)
         return view_function(*args, **kwargs)
     return decorated_function
 
@@ -156,6 +168,7 @@ def login_page():
             session['username'] = request.form['username']
             session['user_realname'] = auth.get_user_name()
             session['user_email'] = auth.get_user_email()
+            session['is_admin'] = auth.is_admin()
             return redirect(url_for("index"))
         else:
             username = request.form['username']
@@ -176,10 +189,13 @@ def logout():
     session['auth'] = False
     session['username'] = None
     session['user_realname'] = None
+    session['is_admin'] = False
+
     return redirect(url_for("index"))
 
 
 @app.route("/settings")
+@admin_required
 @login_required
 def settings_form():
     """Show the settings form."""
@@ -187,6 +203,8 @@ def settings_form():
     return render_template("settings.jinja2", **g.std_args)
 
 
+@admin_required
+@login_required
 @app.route("/initialize")
 def initialize_database():
     """Show the form for initializing the database."""
@@ -233,10 +251,13 @@ def post(callback):
     """
 
     callbacks = {
-        "announcement": save_announcement,
-        "settings": g.db.save_settings,
-        "initialize": g.db.do_initialize_db
+        "announcement": save_announcement
     }
+
+    if session.get("is_admin"):
+        callbacks["settings"] = g.db.save_settings
+        callbacks["initialize"] = g.db.do_initialize_db
+
     if callback not in callbacks.keys() or not session.get("auth"):
         abort(403)
     else:

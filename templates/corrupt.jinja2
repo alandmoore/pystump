@@ -1,5 +1,6 @@
 <H1>Database File Problem</H1>
 
+{% if session.get("is_admin") %}
 <p>Your configured database file, &quot;{{filename}}&quot;, appears to be missing some critical tables:</p>
 <ul>
   {% for table in missing %}
@@ -16,3 +17,8 @@
 <input type='hidden' name='_redirect_' value='{{url_for('index')}}' />
 <input type='submit' value='Initialize' />
 </FORM>
+
+{% else %}
+
+  <p>There is a problem with the database.  <a href="{{url_for('login_page')}}">Login</a> as an admin user to correct it.</p>
+{% endif %}

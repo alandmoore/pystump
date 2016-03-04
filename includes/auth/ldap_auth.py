@@ -1,29 +1,32 @@
 #!/usr/bin/env python
-# Module for authenticating against Active Directory
+# Module for authenticating against LDAP directories
 # by Alan Moore
 
 import ldap3 as ldap
 from .authenticator import auth_backend
 
 
-class AD(auth_backend):
+class LDAPAuth(auth_backend):
+
+    authsource_template = "LDAP on {}"
+    user_query_template = "(uid={})"
+
     def __init__(
             self, host='localhost', port="389", base_dn="",
             bind_dn_username="", bind_dn_password="",
-            require_group=None, ssl=False
+            require_group=None, ssl=False, admins=None
     ):
         """Contructor for the connection.  Assumes plaintext LDAP"""
+        super(LDAPAuth, self).__init__(admins=admins)
         self.error = ""
         self.host = host
         self.base_dn = base_dn
         self.bind_dn = bind_dn_username
         self.bind_pw = bind_dn_password
         self.require_group = require_group
-        # ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, False)
-        # ldap.set_option(ldap.OPT_REFERRALS, 0)
         self.authenticated_user = None
         self.authenticated_dn = None
-        self.authsource = "Active Directory on {}".format(base_dn)
+        self.authsource = self.authsource_template.format(base_dn or host)
         self.ldap_url = ''.join([
             (ssl and "ldaps://") or "ldap://",
             self.host,
@@ -57,7 +60,7 @@ class AD(auth_backend):
 
         success = self.con.search(
             search_base=self.base_dn,
-            search_filter="(sAMAccountName={})".format(username),
+            search_filter=self.user_query_template.format(username),
             search_scope=ldap.SUBTREE
         )
         if not success:
@@ -86,7 +89,22 @@ class AD(auth_backend):
             )
             return False
 
+        self.check_admin_rights()
+
         return True  # All tests passed!
+
+    def check_admin_rights(self):
+
+        if not self.authenticated_user:
+            return False
+
+        for principal in self.admins:
+            if (
+                self.authenticated_user == principal or
+                self.authenticated_dn == principal or
+                self.in_group(principal)
+            ):
+                self.is_admin = True
 
     def in_group(self, group):
         if not self.con:
@@ -111,7 +129,7 @@ class AD(auth_backend):
         if self.con:
             res = self.con.search(
                 self.base_dn,
-                "(sAMAccountName={})".format(username),
+                self.user_query_template.format(username),
                 search_scope=ldap.SUBTREE,
                 attributes=ldap.ALL_ATTRIBUTES
             )
@@ -134,3 +152,15 @@ class AD(auth_backend):
             email = self.info_on(self.authenticated_user).get("mail", [''])[0]
             return email
         return None
+
+
+class AD(LDAPAuth):
+
+    authsource_template = "Active Directory on {}"
+    user_query_template = "(sAMAccountName={})"
+
+
+class EDirectory(LDAPAuth):
+
+    authsource_template = "Novell eDirectory on {}"
+    user_query_template = "(uid={})"

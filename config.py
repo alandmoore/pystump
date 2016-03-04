@@ -37,11 +37,12 @@ AUTH_BACKEND = "dummy"
 
 # Configuration values for Auth backend
 AUTH_CONFIG = {
-        "host" : None, #The IP or hostname of the LDAP server
-        "port" : None, #The Port for LDAP
-        "base_dn" : None, #The DN to start searching for login names
-        "bind_dn_username" : None, #If you need a bind DN for your LDAP
-        "bind_dn_password" : None, #PW for bind DN
-        "require_group" : None, #Login requires membership in this group
-        "ssl" : None #Use SSL
-        }
+    "host" : None, #The IP or hostname of the LDAP server
+    "port" : None, #The Port for LDAP
+    "base_dn" : None, #The DN to start searching for login names
+    "bind_dn_username" : None, #If you need a bind DN for your LDAP
+    "bind_dn_password" : None, #PW for bind DN
+    "require_group" : None, #Login requires membership in this group
+    "ssl" : None, #Use SSL
+    "admins": None # A list of groups or usernames that have admin rights
+}
