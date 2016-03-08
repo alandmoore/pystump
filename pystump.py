@@ -216,6 +216,18 @@ def initialize_database():
     )
 
 
+@admin_required
+@login_required
+@app.route("/clean_expired")
+def clean_expired_form():
+    """Show the form to confirm cleaning expired announcements."""
+
+    return render_template(
+        "clean_expired_form.jinja2",
+        **g.std_args
+    )
+
+
 def save_announcement(formdata, username):
     incoming = formdata.to_dict()
     current = g.db.get_announcement(incoming.get("id", None))
@@ -257,6 +269,7 @@ def post(callback):
     if session.get("is_admin"):
         callbacks["settings"] = g.db.save_settings
         callbacks["initialize"] = g.db.do_initialize_db
+        callbacks['clean_expired'] = g.db.clean_expired
 
     if callback not in callbacks.keys() or not session.get("auth"):
         abort(403)

@@ -345,13 +345,27 @@ $(document).ready(function(){
                 });
         });
 
+    //cleaning expired
+
+    document.clean_expired_form = FormDialog(
+        "/clean_expired",
+        null,
+        function(e, form){
+            e.preventDefault();
+            form.find('input[type=submit]').set_enabled(false);
+            form.find('input[type=submit]').attr("value", 'Please wait...');
+            $.post(form.attr("action"), null, function(){
+                window.location.reload();
+            })
+        }
+    );
 
     //Buttons!
 
     $("#new_announcement A").on("click", function(){document.edit_form.showform();});
     $("#link_settings A").on("click", function(){document.settings_form.showform();});
     $("#link_initialize A").on("click", function(){document.initialize_db_form.showform();});
-
+    $("#link_clean_expired A").on("click", function(){document.clean_expired_form.showform();});
 
     //The announcment list
 

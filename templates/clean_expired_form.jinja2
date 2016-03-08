@@ -1,0 +1,8 @@
+<form id="clean_expired_form" title="Clean up expired announcements" action="{{url_for('post', callback='clean_expired')}}" method='POST'>
+
+  <h1>Clean up?</h1>
+  <p>This action will delete all expired announcments, as well as any images uploaded with them.  This cannot be undone.</p>
+
+  <input type='submit' value='Clean' />
+
+</form>

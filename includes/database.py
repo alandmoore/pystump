@@ -187,8 +187,8 @@ class Database:
     def delete_announcement(self, id, **kwargs):
         if not id:
             return None
-        query = """DELETE FROM announcements WHERE id=?"""
-        self.query(query, id, False)
+        query = """DELETE FROM announcements WHERE id=:id"""
+        self.query(query, {"id": id}, False)
         return ""
 
     def save_settings(self, formdata, **kwargs):
@@ -202,3 +202,15 @@ class Database:
             value = formdata.get(setting)
             self.query(query, {"setting": setting, "value": value}, False)
         return ""
+
+    def clean_expired(self, formdata, **kwargs):
+
+        query = """SELECT id FROM announcements_v WHERE expired"""
+
+        expired_ids = [x["id"] for x in self.query(query)]
+        print(expired_ids)
+
+        for expired_id in expired_ids:
+            self.delete_announcement(expired_id)
+
+        return ''
