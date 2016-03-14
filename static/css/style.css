@@ -231,7 +231,7 @@ NAV UL LI UL LI:hover
   margin: 4px;
   padding: 1em 0 0 1em;
   letter-spacing: .1em;
-  height: 2em;
+  min-height: 2em;
   overflow: hidden;
 }
 
