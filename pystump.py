@@ -112,6 +112,19 @@ def slides():
     )
 
 
+@app.route("/preview/<announcement_id>")
+def preview(announcement_id):
+    """Return a single slide, rendered"""
+
+    announcements = [g.db.get_announcement(announcement_id)]
+
+    return render_template(
+        "main.jinja2",
+        announcements=announcements,
+        **g.std_args
+    )
+
+
 @app.route("/uploads/<path:filename>")
 def uploads(filename):
     """Return an uploaded file."""

@@ -150,6 +150,8 @@ var AnnouncementList = function(el, search_el){
     }
 
     $al.items = $al.find(".announcement_item");
+    $al.edit_buttons = $al.find("BUTTON.edit");
+    $al.preview_buttons = $al.find("BUTTON.preview");
 
     $al.searchbox.focus();
 
@@ -157,15 +159,23 @@ var AnnouncementList = function(el, search_el){
         var term = $al.searchbox.val();
         if (term.length > 0){
             $al.items.hide();
-            $al.items.find(":containsi(" + term + ")").show();
+            $al.items.filter(":containsi(" + term + ")").show();
         }else{
             $al.items.show();
         }
     });
 
-    $al.items.on("click", function(){
-        var id = $(this).data("id");
+    $al.edit_buttons.on("click", function(e){
+        e.preventDefault();
+        var id = $(this).closest("li").data("id");
         document.edit_form.showform("/" + id);
+        return false;
+    });
+
+    $al.preview_buttons.on("click", function(e){
+        e.preventDefault();
+        var id = $(this).closest("li").data("id");
+        window.open(document.basepath.replace(/\/$/, '') + "/preview/" + id);
         return false;
     });
 

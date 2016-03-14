@@ -1,25 +1,29 @@
 {% extends "base.jinja2" %}
 
 {% block body %}
-{% include "navigation.jinja2" %}
+  {% include "navigation.jinja2" %}
 
-<div id="content">
+  <div id="content">
 
-<div id="filter_controls">
-<label for='search'>Search: </label><input id='search' />
-</div>
+    <div id="filter_controls">
+      <label for='search'>Search: </label><input id='search' />
+    </div>
 
-<ul id=announcement_list>
-{% for a in announcements %}
-<li
-   data-id={{a.get("id")|int}}
-   title= "{{a.get("content")|striptags|escape}}"
-   class= 'announcement_item {{a.delayed and 'delayed' or ''}} {{a.expired and 'expired' or ''}}'
->
-   &quot;{{a.get("title")|striptags|escape}}&quot; by {{a.get("author")}}, updated {{a.get("updated")}}
-   <span class="status">{{a.expired and '(expired)' or ''}} {{a.delayed and '(delayed)' or ''}}</span>
-</li>
-{% endfor %}
-</ul>
-</div>
+    <ul id=announcement_list>
+      {% for a in announcements %}
+        <li
+           data-id={{a.get("id")|int}}
+           title= "{{a.get("content")|striptags|escape}}"
+           class= 'announcement_item {{a.delayed and 'delayed' or ''}} {{a.expired and 'expired' or ''}}'
+           >
+           &quot;{{a.get("title")|striptags|escape}}&quot; by {{a.get("author")}}, updated {{a.get("updated")}}
+           <span class="status">{{a.expired and '(expired)' or ''}} {{a.delayed and '(delayed)' or ''}}</span>
+           <span class="buttons">
+             <button class="edit">Edit</button>
+             <button class="preview">Preview</button>
+           </span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}

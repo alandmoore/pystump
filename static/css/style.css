@@ -243,12 +243,13 @@ NAV UL LI UL LI:hover
 }
 
 
-#announcement_list LI:hover
+/* #announcement_list LI:hover
 {
   background-color: slategray;
   cursor: pointer;
   font-style: italic;
   }
+*/
 
 #announcement_list LI.expired
 {
@@ -260,6 +261,26 @@ NAV UL LI UL LI:hover
 {
    background-color: #EEA;
    color: black;
+}
+
+#announcement_list LI .buttons
+{
+   float: right;
+   margin: .5em;
+}
+
+#announcement_list LI .buttons BUTTON
+{
+   border: 1px solid;
+   font-weight: bold;
+   border-radius: 5px;
+   background-color: silver;
+}
+
+#announcement_list LI .buttons BUTTON:hover
+{
+   background-color: white;
+   cursor: pointer;
 }
 
 FORM
