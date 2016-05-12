@@ -144,3 +144,13 @@ Admin Users
 ~~~~~~~~~~~
 
 If you configure the "admins" option on your authentication backend, only users in the admins list (or users in groups in that list) will be able to initialize the databse or adjust the settings.  If you leave the setting blank, everyone will be an admin and be able to do those things.
+
+
+Transition Backends
+~~~~~~~~~~~~~~~~~~~
+
+The default transitions are provided by animate.css.  You can optionally switch to the legacy jquery-ui transitions.  There aren't as many, but you may prefer them or find them more compatible, etc.
+
+This is set by changing the ``TRANSITIONS`` setting in the config.  Valid values are ``animatecss`` or ``jquery-ui``.
+
+Note that the names of the transitions are not the same between the two backends, so if you change this your existing slides will default to no transition effects until you go back and change them all.
