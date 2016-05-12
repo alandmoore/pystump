@@ -74,7 +74,8 @@ def before_request():
         g.std_args = {
             "settings": settings,
             "session": session,
-            "site_name": app.config.get("SITE_NAME", 'PyStump')
+            "site_name": app.config.get("SITE_NAME", 'PyStump'),
+            "transition_backend": app.config.get("TRANSITIONS", 'animatecss'),
         }
 
 
@@ -151,10 +152,16 @@ def edit_announcement(announcement_id=None):
     """Show the edit form for an announcement."""
 
     announcement = g.db.get_announcement(announcement_id)
+    transitions = (
+        lookups.transitions_animatecss
+        if app.config.get("TRANSITIONS", "animatecss") == 'animatecss'
+        else lookups.transitions_jquery_ui
+    )
     return render_template(
         "edit.jinja2",
         announcement=announcement,
-        lookups=lookups,
+        bg_image_modes=lookups.bg_image_modes,
+        transitions=transitions,
         **g.std_args
     )
 

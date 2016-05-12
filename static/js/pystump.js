@@ -17,6 +17,26 @@ $.extend($.expr[':'], {
     }
 });
 
+//Animate.css wrapper function (adapted from animate.css README)
+
+$.fn.extend({
+    animateCss: function (animationName, animation_duration) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        if (animation_duration){
+            var dv = animation_duration + 'ms';
+            var duration_props = {
+                '-webkit-animation-duration': dv,
+                '-moz-animation-duration': dv,
+                '-o-animation-duration': dv,
+                'animation-duration': dv
+            };
+            $(this).css(duration_props);
+        }
+        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+        });
+    }
+});
 
 // This function takes an element and stretches it to fit the page, expanding text to maximum size.
 
@@ -230,7 +250,10 @@ var AnnouncementDisplay = function(el, source_url){
 
         //hide the slides and show the new one.
         $ad.slides.hide();
-        if (transition){
+        if (transition && transition_backend === 'animatecss'){
+            $ad.slide.show();
+            $ad.slide.animateCss(transition, transition_time);
+        }else if (transition && transition_backend === 'jquery-ui'){
             $ad.slide.show({effect: transition, duration: transition_time});
         }else{
             $ad.slide.show();

@@ -6,7 +6,11 @@ import sqlite3
 from .util import (
     debug, string_to_datetime
 )
-from .lookups import transitions, bg_image_modes
+from .lookups import (
+    transitions_jquery_ui,
+    transitions_animatecss,
+    bg_image_modes
+)
 
 import os
 
@@ -134,7 +138,10 @@ class Database:
         if bg_image_mode not in bg_image_modes:
             bg_image_mode = bg_image_mode[0]
         transition = formdata.get("transition")
-        if transition and transition not in transitions:
+        if (
+            transition and
+            transition not in (transitions_animatecss + transitions_jquery_ui)
+        ):
             transition = ''
 
         qdata = {

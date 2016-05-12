@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/style.css")}}' />
     <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/jquery-ui.css")}}' />
+    <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/animate.css")}}' />
     <script src='{{url_for("static", filename="js/jquery.js")}}'></script>
     <script src='{{url_for("static", filename="js/jquery-ui.js")}}'></script>
     {% if session.get('auth') %} {# these are only needed if logged in #}
@@ -22,7 +23,8 @@
     {% if settings|length > 0 %}
     <script>
       {% for key, value in settings.items(): %}
-    var {{key|replace(' ', '_')}} = "{{value[0] if value[0] != None}}";
+        var {{key|replace(' ', '_')}} = "{{value[0] if value[0] != None}}";
+        var transition_backend = "{{transition_backend}}";
       {% endfor %}
       </script>
     {% endif %}

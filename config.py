@@ -28,6 +28,10 @@ UPLOAD_FOLDER = "uploads"
 # Give your site a name
 SITE_NAME = "PyStump"
 
+# You can choose between jquery-ui and animatecss transitions
+
+TRANSITIONS = 'animatecss'
+
 ######################
 # LDAP Configuration #
 ######################
