@@ -34,6 +34,7 @@ $.fn.extend({
         }
         $(this).addClass('animated ' + animationName).one(animationEnd, function() {
             $(this).removeClass('animated ' + animationName);
+            $(this).trigger("animatecss.finished");
         });
     }
 });
@@ -216,7 +217,9 @@ var AnnouncementDisplay = function(el, source_url){
         $ad.slides.each(function(i, el){
             fit_el_to_page(el);
         });
-        //$ad.slides.hide();
+        $ad.old_slide = $ad.slides.last();
+        $ad.slides.hide();
+        $ad.old_slide.show();
         $ad.slide = $ad.slides.first();
         if ($ad.slide.length > 0){
             $ad.show_slide();
@@ -255,10 +258,18 @@ var AnnouncementDisplay = function(el, source_url){
         if (transition && transition_backend === 'animatecss'){
             $ad.slide.show();
             $ad.slide.animateCss(transition, transition_time);
+            $ad.slide.one('animatecss.finished', function(){
+                $ad.old_slide.hide();
+            });
         }else if (transition && transition_backend === 'jquery-ui'){
-            $ad.slide.show({effect: transition, duration: transition_time});
+            $ad.slide.show({
+                effect: transition,
+                duration: transition_time,
+                complete: function(){ $ad.old_slide.hide(); }
+            });
         }else{
             $ad.slide.show();
+            $ad.old_slide.hide();
         }
 
         //set the timer for moving to the next slide
