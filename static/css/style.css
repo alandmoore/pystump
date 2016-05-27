@@ -372,7 +372,7 @@ FORM A
    height: calc(100% - 80px);
    position: absolute;
    top: 55px;
-
+   overflow: hidden;
 }
 
 #announcements .announcement_display
@@ -381,6 +381,7 @@ FORM A
    margin: 0;
    padding: 0;
    overflow: hidden;
+   position: absolute;
 }
 
 #title
