@@ -216,6 +216,7 @@ var AnnouncementDisplay = function(el, source_url){
         $ad.slides.each(function(i, el){
             fit_el_to_page(el);
         });
+        $ad.slides.hide();
         $ad.slide = $ad.slides.first();
         if ($ad.slide.length > 0){
             $ad.show_slide();
@@ -246,7 +247,11 @@ var AnnouncementDisplay = function(el, source_url){
         $("#meta").html(meta_text);
 
         //hide the slides and show the new one.
-        $ad.slides.hide();
+        //$ad.slides.hide();
+        if ($ad.old_slide){
+            $ad.old_slide.css({'z-index': 0});
+        }
+        $ad.slide.css({'z-index': 100, 'position': 'absolute', 'top': 0});
         if (transition && transition_backend === 'animatecss'){
             $ad.slide.show();
             $ad.slide.animateCss(transition, transition_time);
@@ -264,6 +269,7 @@ var AnnouncementDisplay = function(el, source_url){
     };
 
     $ad.advance_slide = function(){
+        $ad.old_slide = $ad.slide;
         $ad.slide = $ad.slide.next();
         if ($ad.slide.length === 0){
             $ad.refresh_slides();
