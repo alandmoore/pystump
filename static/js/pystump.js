@@ -216,7 +216,7 @@ var AnnouncementDisplay = function(el, source_url){
         $ad.slides.each(function(i, el){
             fit_el_to_page(el);
         });
-        $ad.slides.hide();
+        //$ad.slides.hide();
         $ad.slide = $ad.slides.first();
         if ($ad.slide.length > 0){
             $ad.show_slide();
@@ -251,7 +251,7 @@ var AnnouncementDisplay = function(el, source_url){
         if ($ad.old_slide){
             $ad.old_slide.css({'z-index': 0});
         }
-        $ad.slide.css({'z-index': 100, 'position': 'absolute', 'top': 0});
+        $ad.slide.css({'z-index': 100, 'top': 0});
         if (transition && transition_backend === 'animatecss'){
             $ad.slide.show();
             $ad.slide.animateCss(transition, transition_time);
