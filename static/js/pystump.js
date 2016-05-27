@@ -85,7 +85,7 @@ var FormDialog = function(url, init_function, submit_function){
     $fd.dialog_options = {
         width: "90%",
         modal: true
-    }
+    };
     $fd.$dialog = $("#_dialog_");
     $fd.$dialog.hide();
 
@@ -152,13 +152,10 @@ var FormDialog = function(url, init_function, submit_function){
                 });
             }
         });
-    }//end show_form()
-
-
-
+    };//end show_form()
 
     return $fd;
-}
+};
 
 
 var AnnouncementList = function(el, search_el){
@@ -200,7 +197,7 @@ var AnnouncementList = function(el, search_el){
     });
 
     return $al;
-}
+};
 
 
 var AnnouncementDisplay = function(el, source_url){
@@ -223,7 +220,7 @@ var AnnouncementDisplay = function(el, source_url){
         if ($ad.slide.length > 0){
             $ad.show_slide();
         }
-    }
+    };
 
     $ad.refresh_slides = function(){
         $.get(
@@ -234,7 +231,7 @@ var AnnouncementDisplay = function(el, source_url){
             }).fail(function(){
                 setTimeout($ad.refresh_slides, 10000);
             });
-    }
+    };
 
     $ad.show_slide = function(){
         var duration = parseInt($ad.slide.data("duration"), 10) * 1000;
@@ -264,7 +261,7 @@ var AnnouncementDisplay = function(el, source_url){
             clearTimeout($ad.advance_timeout);
         }
         $ad.advance_timeout = setTimeout($ad.advance_slide, duration);
-    }
+    };
 
     $ad.advance_slide = function(){
         $ad.slide = $ad.slide.next();
@@ -273,7 +270,7 @@ var AnnouncementDisplay = function(el, source_url){
         }else{
             $ad.show_slide();
         }
-    }
+    };
     $ad.back_slide = function(){
         $ad.slide = $ad.slide.prev();
         if ($ad.slide.length === 0){
@@ -281,7 +278,7 @@ var AnnouncementDisplay = function(el, source_url){
         }else{
             $ad.show_slide();
         }
-    }
+    };
 
     $(document).on("click", '#advance_slide', $ad.advance_slide);
     $(document).on("click", "#back_slide", $ad.back_slide);
@@ -289,7 +286,7 @@ var AnnouncementDisplay = function(el, source_url){
     $ad.init();
 
     return $ad;
-}
+};
 
 /////////////////////////////
 // Document initialization //
@@ -310,7 +307,7 @@ $(document).ready(function(){
                 function(){
                     $("#_dialog_").dialog("close");
                 }
-            )
+            );
         });
 
     //DB init form
@@ -389,7 +386,7 @@ $(document).ready(function(){
             form.find('input[type=submit]').attr("value", 'Please wait...');
             $.post(form.attr("action"), null, function(){
                 window.location.reload();
-            })
+            });
         }
     );
 
