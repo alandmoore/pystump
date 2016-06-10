@@ -12,6 +12,14 @@ What is it?
 
 PyStump is a web service for displaying announcement slides, such as for a digital signage kiosk.  PyStump is designed to be updated and edited all in a browser.
 
+Some interesting features include:
+
+- LDAP (Active Directory, eDirectory) or SQLite logins
+- Text auto-sizes to fit any screen size
+- Background can be an image or solid color
+- Animated transitions
+- Slides can be activated and expired automatically by date/time
+
 PyStump is built on Flask, Python, and SQLite.
 
 Much of PyStump's codebase was originally borrowed from another project, `OmegaHymnal <http://www.alandmoore.com/omegahymnal/omegahymnal.html>`_.
@@ -20,9 +28,12 @@ Much of PyStump's codebase was originally borrowed from another project, `OmegaH
 Who would use this?
 ===================
 
-An example might be an organization that wants to display announcements on digital signage.  Kiosks could be pointed to a web server running PyStump, and authorized users could update the announcements using their web browser.
+Any organization -- workplaces, schools, stores, restaurants, churches, libraries, government buildings, etc --  that has information to communicate to a large group of people can make use of PyStump.  Display announcements and upcoming events, highlight specials or sales, give encouraging words or instructions -- say what you want to say.
 
-The authorization backends supported at this point include Active Directory and eDirectory.  Other authorization backends may be added at some point.
+Any number of simple kiosks (computers running a full-screen web browser) can be pointed to a single web server running PyStump, where authorized users can update the announcements using a web browser.
+
+Users can be authenticated using Microsoft Active Directory, Novell eDirectory, or users/passwords stored in SQLite, so it can be flexible to a wide variety of organizations.
+
 
 
 Installation
