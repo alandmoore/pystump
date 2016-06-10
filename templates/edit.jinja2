@@ -43,7 +43,7 @@
    <label>Background Image</label>
    {% if announcement.get("bg_image") %}
    <div style="float: left; border: 1px dashed #666;">
-   <img src='{{url_for("uploads", filename=announcement.get("bg_image"))}}' width="200"  />
+   <img id="bg_image_preview" src='{{url_for("uploads", filename=announcement.get("bg_image"))}}' width="200"  />
 
    <label for="delete_bg_image_cb" style="float: none">
     <input type="checkbox" name="delete_bg_image" id="delete_bg_image_cb" />
