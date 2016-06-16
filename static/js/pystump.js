@@ -1,8 +1,10 @@
 //Javascript functions for PyStump
-//Assumes jQuery, jQuery-UI
 
-/* global $, jQuery */
+//provided by libraries
+/* global $, jQuery, CKEDITOR */
 
+//provided by the header
+/* global Transition_Time, Show_Updated, Show_Author, transition_backend */
 /////////////////////////////////////
 // Utilities and jQuery extensions //
 /////////////////////////////////////
@@ -205,7 +207,7 @@ var FormDialog = function(url, init_function, submit_function){
 
 
 var AnnouncementList = function(el, search_el){
-    $al = $(el);
+    var $al = $(el);
     $al.searchbox = $(search_el);
 
     if ($al.length === 0){
@@ -278,7 +280,7 @@ var AnnouncementDisplay = function(el, source_url){
         $ad.html(data);
         $ad.init();
         }).fail(function(){
-        setTimeout($ad.refresh_slides, 10000);
+        window.setTimeout($ad.refresh_slides, 10000);
         });
     };
 
@@ -290,7 +292,7 @@ var AnnouncementDisplay = function(el, source_url){
     //set title
     $("#title").html($ad.slide.data("title"));
     //set meta info
-    meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
+    var meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
         (Show_Author ? ("By " + $ad.slide.data("author")) : '');
     $("#meta").html(meta_text);
 
@@ -319,9 +321,9 @@ var AnnouncementDisplay = function(el, source_url){
 
     //set the timer for moving to the next slide
     if ($ad.advance_timeout){
-        clearTimeout($ad.advance_timeout);
+        window.clearTimeout($ad.advance_timeout);
     }
-    $ad.advance_timeout = setTimeout($ad.advance_slide, duration);
+    $ad.advance_timeout = window.setTimeout($ad.advance_slide, duration);
     };
 
     $ad.advance_slide = function(){
