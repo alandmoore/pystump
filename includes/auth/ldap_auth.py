@@ -10,6 +10,7 @@ class LDAPAuth(auth_backend):
 
     authsource_template = "LDAP on {}"
     user_query_template = "(uid={})"
+    group_membership_key = "memberOf"
 
     def __init__(
             self, host='localhost', port="389", base_dn="",
@@ -120,7 +121,7 @@ class LDAPAuth(auth_backend):
             group_dn = self.con.response[0].get("dn")
             if group_dn in self.info_on(
                     self.authenticated_user
-            ).get("memberOf"):
+            ).get(self.group_membership_key):
                 return True
         return False
 
@@ -158,9 +159,10 @@ class AD(LDAPAuth):
 
     authsource_template = "Active Directory on {}"
     user_query_template = "(sAMAccountName={})"
-
+    group_membership_key = "memberOf"
 
 class EDirectory(LDAPAuth):
 
     authsource_template = "Novell eDirectory on {}"
     user_query_template = "(uid={})"
+    group_membership_key = "groupMembership"
