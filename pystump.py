@@ -82,7 +82,6 @@ def before_request():
                 settings.get("Show Updated", [0])
             )),
         }
-        print(g.std_args)
 
 
 @app.route("/")
