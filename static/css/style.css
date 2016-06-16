@@ -218,9 +218,10 @@ NAV UL LI UL LI:hover
   width: 80%;
   position: relative;
   overflow: auto;
-  height: auto;
-  margin-top: 8em;
+   height: auto;
+   margin-top: 8em;
 }
+
 
 #announcement_list LI
 {
@@ -446,11 +447,33 @@ FORM A
    margin: 0;
    padding: 0;
    width: 100%;
-   height: calc(100% - 80px);
    position: absolute;
-   top: 55px;
    overflow: hidden;
 }
+
+#announcements.with_title.with_meta
+{
+   top: 55px;
+   height: calc(100% - 80px);
+}
+
+#announcements.without_title.with_meta
+{
+   top: 0;
+   height: calc(100% - 25px);
+}
+
+#announcements.with_title.without_meta
+{
+   top: 55px;
+   height: calc(100% - 55px);
+}
+
+#announcements.without_title.without_meta
+{
+   height: 100%;
+}
+
 
 #announcements .announcement_display
 {

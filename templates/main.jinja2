@@ -3,13 +3,20 @@
 {% block body %}
 {% include "navigation.jinja2" %}
 <div id="content">
-<div id="title"></div>
-<div id="announcements">
+  {% if show_title %}
+    <div id="title"></div>
+  {% endif %}
+  <div id="announcements"
+       class="{{show_title and "with_title" or "without_title"}} {{show_meta and "with_meta" or "without_meta"}}"
+       >
 
   {% include "slides.jinja2" %}
 
 </div>
-   <div id="meta"></div>
+{% if show_meta %}
+  <div id="meta"></div>
+{% endif %}
+
 </div>
 {% endblock %}
 

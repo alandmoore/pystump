@@ -76,7 +76,13 @@ def before_request():
             "session": session,
             "site_name": app.config.get("SITE_NAME", 'PyStump'),
             "transition_backend": app.config.get("TRANSITIONS", 'animatecss'),
+            "show_title": settings.get("Show Title", [0])[0] == '1',
+            "show_meta": '1' in (x[0] for x in (
+                settings.get("Show Author", [0]),
+                settings.get("Show Updated", [0])
+            )),
         }
+        print(g.std_args)
 
 
 @app.route("/")

@@ -1,6 +1,6 @@
 <form id=settings_form title='Application settings' method='POST' action='{{url_for('post', callback='settings')}}'>
 <ul>
-{% for name, value in settings.items() %}
+{% for name, value in settings|dictsort %}
 <li><label>{{name}}</label>
 {% if value[1] == 'checkbox' %}
 <input type='{{value[1]}}' name='{{name}}', value= '1' {% if value[0] == '1' %}checked{% endif %}>
