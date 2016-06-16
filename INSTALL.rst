@@ -72,8 +72,8 @@ These instructions are for setting up PyStump on a unix-like OS using flask's bu
 Advanced
 --------
 
-Running on a Server
-~~~~~~~~~~~~~~~~~~~
+Running with a production Web Server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to run PyStump on a lot of screens and give access to a lot of users, it's probably better to install it behind a real webserver.
 
@@ -87,7 +87,7 @@ The included ``pystump.wsgi`` file can be used to run PyStump behind Apache usin
     # Uncomment for debugging
     # SetEnv PYSTUMP_DEBUG 1
 
-    <Directory /srv/www/it-announcements>
+    <Directory /path/to/pystump>
         Require all granted
     </Directory>
 
@@ -121,7 +121,7 @@ Active Directory and eDirectory have similar configurations:
 For SQLite Auth the configuration is simpler:
 
 - In ``instance/config.py`` set ``AUTH_BACKEND`` to "sqlite"
-- Now set ``AUTH_CONFIG`` to a dictionary with ``dbfile`` set to the path to the sqlite file.  You can use the same file you use for announcments, or a different file.
+- Now set ``AUTH_CONFIG`` to a dictionary with ``dbfile`` set to the path to the sqlite file.  You can use the same file you use for announcements, or a different file.
 - Optionally, you can specify any of these options (useful if you have a sqlite file used for other things):
 
   - ``table``: The name of the table holding users.  Default is "users".

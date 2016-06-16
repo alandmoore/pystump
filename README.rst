@@ -10,7 +10,8 @@ Simple web-based announcements
 What is it?
 ===========
 
-PyStump is a web service for displaying announcement slides, such as for a digital signage kiosk.  PyStump is designed to be updated and edited all in a browser.
+PyStump is a web service for displaying announcement slides, such as for a digital signage kiosk.
+PyStump is designed to be updated, edited, and managed entirely in the browser.
 
 Some interesting features include:
 
@@ -75,3 +76,17 @@ If you would like to see a new feature added to PyStump, you have three options:
 - Hope and pray that someone else needs your feature and does one of the above.
 
 All code contributions are appreciated.  If you contribute a patch, please make sure to add your name to the Authors section.
+
+
+TODO List
+---------
+
+Some things potential contributors could help with:
+
+- Streamlining and improving the announcement editor.  It's a bit clunky now, and it's hard to envision how the text will lay out due to the auto-resizing feature.
+
+- An admin interface for the sqlite authentication option.
+
+- More interesting font options for the editor, possibly using webfonts or similar.
+
+- A better UI for adding/previewing/managing announcements overall.  The current workflow is kind of weird.

@@ -5,6 +5,7 @@
 
 //provided by the header
 /* global Transition_Time, Show_Updated, Show_Author, transition_backend */
+
 /////////////////////////////////////
 // Utilities and jQuery extensions //
 /////////////////////////////////////
