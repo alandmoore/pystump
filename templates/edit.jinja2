@@ -1,74 +1,91 @@
 <form name="announcement_form" id="announcement_form" action="{{url_for("post", callback='announcement')}}" method="POST" title="Edit Announcement" enctype="multipart/form-data">
-<input type=hidden name="id" value='{{announcement.get("id", '')}}' />
-<input type=hidden name="_redirect_" value='{{url_for("list_announcements")}}' />
-{% if announcement.get("id") %}
-  <div style="float: right"><input type="checkbox" name='delete' id="delete_cb" title="Check here and click 'Save' to delete this announcement. "/><label for="delete_cb">Delete</label></div>
-  {% endif %}
-<ul>
- <li>
-  <label>Title</label>
-  <input name="title" type="text" value="{{announcement.get("title", '')}}" required>
- </li>
- <li>
-  <label>Activation Date</label>
-  <input name="activate-display" data-altfield="activate_datetime_input" class="datepicker" data-widget="datetime" value="{{announcement.get("activate") and announcement['activate'].isoformat() or ''}}" />
-  <input id="activate_datetime_input" name="activate" type="hidden" value="{{announcement.get("activate", '')}}" />
- </li>
- <li>
-  <label>Expiration Date</label>
-  <input name="expire-display" data-altfield="expire_datetime_input" class="datepicker" data-widget="datetime" value="{{announcement.get("expire") and announcement['expire'].isoformat() or ''}}" />
-  <input id="expire_datetime_input" name="expire" type="hidden" value="{{announcement.get("expire", '')}}" />
- </li>
- <li>
-  <label>Duration <span class="note">(seconds)</span></label>
-  <input name="duration" type="number" min={{settings.get("Min Duration")[0]}} max={{settings.get("Max Duration")[0]}} value="{{announcement.get("duration", settings.get("Min Duration")[0])}}" />
- </li>
- <li><label>Transition</label>
-   <SELECT name="transition">
-     <option value=''>None</option>
-     {% for transition in transitions %}
-       <option value="{{transition}}" {% if transition == announcement.get("transition")%}selected{% endif %}>{{transition}}</option>
-{% endfor %}
-     </SELECT>
- </li>
- <li>
-  <label>Foreground Color</label>
-  <input name="fg_color" type="color" value="{{announcement.get("fg_color", "#000000")}}" />
- </li>
- <li>
-  <label>Background Color</label>
-  <input name="bg_color" type="color" value="{{announcement.get("bg_color", "#FFFFFF")}}">
- </li>
- <li>
-   <label>Background Image</label>
-   {% if announcement.get("bg_image") %}
-   <div style="float: left; border: 1px dashed #666;">
-   <img id="bg_image_preview" src='{{url_for("uploads", filename=announcement.get("bg_image"))}}' width="200"  />
+  <input type=hidden name="id" value='{{announcement.get("id", '')}}' />
+  <input type=hidden name="_redirect_" value='{{url_for("list_announcements")}}' />
 
-   <label for="delete_bg_image_cb" style="float: none">
-    <input type="checkbox" name="delete_bg_image" id="delete_bg_image_cb" />
-    Delete Image
-   </label>
-   </div>
-   {% else %}
-   <input type="file" name="bg_image" />
-   {% endif %}
- </li>
- <li>
-  <label>BG Image mode</label>
-  <SELECT name="bg_image_mode" >
-   {% for option in bg_image_modes %}
-   <OPTION value={{option}} {% if announcement.get('bg_image_mode') == option %}selected{% endif %}>{{option}}</OPTION>
-   {% endfor %}
-  </SELECT>
- </li>
-<li>
-  <label>Content</label>
+  <ul class="left">
+    <li>
+      <label>Title</label>
+      <input name="title" type="text" value="{{announcement.get("title", '')}}" required>
+    </li>
+    <li>
+      <ul>
+        <li>
+          <label>Activation Date</label>
+          <input name="activate-display" data-altfield="activate_datetime_input" class="datepicker" data-widget="datetime" value="{{announcement.get("activate") and announcement['activate'].isoformat() or ''}}" />
+          <input id="activate_datetime_input" name="activate" type="hidden" value="{{announcement.get("activate", '')}}" />
+        </li>
+        <li>
+
+          <label>Expiration Date</label>
+          <input name="expire-display" data-altfield="expire_datetime_input" class="datepicker" data-widget="datetime" value="{{announcement.get("expire") and announcement['expire'].isoformat() or ''}}" />
+          <input id="expire_datetime_input" name="expire" type="hidden" value="{{announcement.get("expire", '')}}" />
+        </li>
+      </ul>
+    </li>
+    <li>
+      <ul>
+        <li>
+          <label>Duration <span class="note">(sec)</span></label>
+          <input name="duration" type="number" min={{settings.get("Min Duration")[0]}} max={{settings.get("Max Duration")[0]}} value="{{announcement.get("duration", settings.get("Min Duration")[0])}}" />
+        </li>
+        <li><label>Transition</label>
+          <SELECT name="transition">
+            <option value=''>None</option>
+            {% for transition in transitions %}
+              <option value="{{transition}}" {% if transition == announcement.get("transition")%}selected{% endif %}>{{transition}}</option>
+            {% endfor %}
+          </SELECT>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <ul class="right">
+    <li>
+      <ul>
+        <li>
+          <label>Text Color</label>
+          <input name="fg_color" type="color" value="{{announcement.get("fg_color", "#000000")}}" />
+        </li>
+        <li>
+          <label>Background Color</label>
+          <input name="bg_color" type="color" value="{{announcement.get("bg_color", "#FFFFFF")}}">
+        </li>
+      </ul>
+    </li>
+    <li>
+      <ul>
+        <li>
+          <label>Background Image</label>
+          {% if announcement.get("bg_image") %}
+            <div  id="bg_image_control">
+              <a href='{{url_for("uploads", filename=announcement.get("bg_image"))}}' target="_blank" class="image_link">{{announcement.get("bg_image").split("/")[-1]}}</a>
+              <label for="delete_bg_image_cb" style="float: none">
+                <input type="checkbox" name="delete_bg_image" id="delete_bg_image_cb" />
+                Delete Image
+              </label>
+              <div class='preview_popup'>
+                <img id="bg_image_preview" src='{{url_for("uploads", filename=announcement.get("bg_image"))}}' width="200" />
+              </div>
+            </div>
+          {% else %}
+            <input type="file" name="bg_image" />
+          {% endif %}
+        </li>
+        <li>
+          <label>BG Image mode</label>
+          <SELECT name="bg_image_mode" >
+            {% for option in bg_image_modes %}
+              <OPTION value={{option}} {% if announcement.get('bg_image_mode') == option %}selected{% endif %}>{{option}}</OPTION>
+            {% endfor %}
+          </SELECT>
+        </li>
+      </ul>
+    </li>
+  </ul>
   <br style="clear:both" />
- <textarea class="ckedit" id="announcement_content_textarea" name='content' required>{{announcement.get("content", '')}}</textarea>
-</li>
-
- <li>
- <input type=submit value=Save />
-</li>
-</ul>
+  <textarea class="ckedit" id="announcement_content_textarea" name='content' required>{{announcement.get("content", '')}}</textarea>
+  <br />
+    {% if announcement.get("id") %}
+    <div style="float: right"><label for="delete_cb"><input type="checkbox" name='delete' id="delete_cb" title="Check here and click 'Save' to delete this announcement. "/>Delete</label></div>
+  {% endif %}
+  <input type=submit value=Save />

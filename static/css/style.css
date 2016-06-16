@@ -166,6 +166,7 @@ NAV UL LI:hover UL {
    position: absolute;
    right: 0;
    width: 10em;
+   z-index: 200;
 }
 
 NAV UL LI UL LI
@@ -175,6 +176,7 @@ NAV UL LI UL LI
    float: none;
    width: 100%;
    border-radius: .5em;
+   z-index: 200;
  }
 
 NAV UL LI UL LI:hover
@@ -345,8 +347,8 @@ FORM A
 }
 
 #delete{
-         color: red;
-         border: solid 2px red;
+     color: red;
+     border: solid 2px red;
  }
 
 #filter_controls
@@ -359,6 +361,81 @@ FORM A
   z-index: 50;
   width: 100%;
  }
+
+#announcement_form UL
+{
+   margin: 0;
+   padding: 0;
+}
+
+#announcement_form UL.left
+{
+   float: left;
+   width: 48%;
+}
+
+#announcement_form UL.right
+{
+   float: right;
+   width: 48%;
+}
+
+
+#announcement_form UL LI UL LI
+{
+   display: block;
+   float: left;
+   width: 50%;
+   min-width: 210px;
+}
+
+#announcement_form LI
+{
+   font-size: .8em;
+   margin: .5em 0;
+   padding: 0;
+   border-radius: 0;
+   overflow: visible;
+}
+
+#announcement_form INPUT:not([type=submit]):not([type=checkbox])
+{
+   width: 90%;
+}
+
+#announcement_form INPUT.short
+{
+   width: 40%;
+}
+
+#announcement_form LABEL
+{
+   display: block;
+   float: none;
+}
+
+#announcement_form #bg_image_control
+{
+   padding: 5px;
+   background-color: #EEE;
+   border-radius: 2px;
+   width: 200px;
+   position: relative;
+   height: 4em;
+}
+
+#announcement_form .preview_popup
+{
+   display: none;
+   position: absolute;
+   float: left;
+   z-index: 300;
+   width: 200px;
+   background-color: white;
+   padding: 5px;
+   background-color: #EEE;
+   margin-left: -5px;
+}
 
 /****************/
 /* Main Display */
