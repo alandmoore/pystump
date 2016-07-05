@@ -215,7 +215,8 @@ class Database:
         query = """SELECT id FROM announcements_v WHERE expired"""
 
         expired_ids = [x["id"] for x in self.query(query)]
-        print(expired_ids)
+
+        debug("Expired IDs: {}".format(expired_ids))
 
         for expired_id in expired_ids:
             self.delete_announcement(expired_id)
