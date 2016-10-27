@@ -65,19 +65,28 @@ function fit_el_to_page(el) {
     $(el).height("100%");
 }
 
-function fit_el_to_parent(el) {
-    var parent = $(el).parent()[0];
-    var target_height =  parent.innerHeight - $("NAV").outerHeight() - $("#meta").outerHeight();
-    var numbreaks = $(el).find("br").size() +1;
-    var target_width = parent.innerWidth;
+function fit_el_to_parent(el, parent) {
+    parent = parent || el.parentElement;
+    var target_height =  parent.scrollHeight;
+    var numbreaks = $(el).find("br, p").size() +1;
+    var target_width = parent.scrollWidth;
     var line_size = target_height / numbreaks;
     var font_size = line_size;
+    var $el = $(el);
     //$(el).css("line-height", line_size+"px");
-    $(el).css("white-space", "nowrap");
-    $(el).css("font-size", font_size+"px");
+    $el.css({
+        "white-space": "nowrap",
+        "font-size": font_size+"px",
+        'position': 'absolute',
+        'top': 0,
+        'padding': 0,
+        'margin': 0
+    });
+
+
     //The basic concept here is to shrink the text by 10% until the scrollwidth is less than the target width, and scrollheight likewise.
     //This would indicate a lack of scrollbars.
-    while (($(el)[0].scrollWidth > target_width || $(el)[0].scrollHeight > target_height) && font_size > 12){
+    while ((el.scrollWidth > target_width || el.scrollHeight > target_height) && font_size > 12){
     font_size *= .9;
     $(el).css("font-size", font_size+"px");
     //console.log($(el).attr("id"), "W: ", $(el)[0].scrollWidth, target_width,"; H:",  $(el)[0].scrollHeight, target_height, '; F: ', font_size );
@@ -103,17 +112,17 @@ $.fn.extend({
 
 var BackgroundImageControl = function($el){
     if ($el.length === 0){
-        return null;
+    return null;
     }
 
     $el.preview = $el.find("DIV.preview_popup");
 
     $el.on("mouseenter", function(){
-        $el.preview.show();
+    $el.preview.show();
     });
 
     $el.on("mouseleave", function(){
-        $el.preview.hide();
+    $el.preview.hide();
     });
 
     return $el;
@@ -181,7 +190,7 @@ var FormDialog = function(url, init_function, submit_function){
 
         //image preview
         fd.bg_image_control = BackgroundImageControl(
-            fd.$form.find("#bg_image_control")
+        fd.$form.find("#bg_image_control")
         );
 
         // Textareas to CKEDITOR
@@ -476,16 +485,19 @@ $(document).ready(function(){
             if (img.length > 0){
             set_editor_bg_image(editor_doc, img.attr("src"), bg_image_mode);
             }
-            //this doesn't work yet:
-            //fit_el_to_parent(editor_doc);
+            //fit text to the editor like the real thing does
+            fit_el_to_parent(editor_doc, $('iframe')[0]);
+            $(editor_doc).on('keyup', function(){
+                fit_el_to_parent(editor_doc, $('iframe')[0]);
+            });
 
         });
         //this code should simulate maximizing the text in the editor window
         //too bad it doesn't work...
-        //form.on('keyup', 'textarea[name=content]', function(){
-    //	var editor_doc = CKEDITOR.instances.announcement_content_textarea.document.getBody()["$"];
-    //	fit_el_to_parent(editor_doc.childNodes[0]);
-      //  });
+        form.on('keyup', 'textarea[name=content]', function(){
+            var editor_doc = CKEDITOR.instances.announcement_content_textarea.document.getBody()["$"];
+            fit_el_to_parent(editor_doc, $('iframe')[0]);
+          });
 
 
     });
