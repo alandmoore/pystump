@@ -73,7 +73,6 @@ def before_request():
         settings = g.db.get_settings()
         g.std_args = {
             "settings": settings,
-            "session": session,
             "site_name": app.config.get("SITE_NAME", 'PyStump'),
             "transition_backend": app.config.get("TRANSITIONS", 'animatecss'),
             "show_title": settings.get("Show Title", [0])[0] == '1',
