@@ -262,19 +262,20 @@ var AnnouncementDisplay = function(el, autoadvance){
     }
 
     $ad.init = function(){
-    $ad.slides = $ad.find(".announcement_display");
-    $ad.slides.each(function(i, el){
-        fit_el_to_parent(el, window, $("NAV").outerHeight() + $("#meta").outerHeight());
-    });
-    $ad.old_slide = $ad.slides.length > 1 ? $ad.slides.last() : null;
-    $ad.slides.hide();
-    if ($ad.old_slide){
-        $ad.old_slide.show();
-    }
-    $ad.slide = $ad.slides.first();
-    if ($ad.slide.length > 0){
-        $ad.show_slide();
-    }
+        $ad.slides = $ad.find(".announcement_display");
+        $ad.slides.each(function(i, el){
+            fit_el_to_parent(el, window, $("NAV").outerHeight() + $("#meta").outerHeight());
+        });
+        $ad.old_slide = $ad.slides.length > 1 ? $ad.slides.last() : null;
+        $ad.slides.hide();
+        if ($ad.old_slide){
+            $ad.old_slide.html(slide_content_eval($ad.old_slide.html()));
+            $ad.old_slide.show();
+        }
+        $ad.slide = $ad.slides.first();
+        if ($ad.slide.length > 0){
+            $ad.show_slide();
+        }
     };
 
     $ad.refresh_slides = function(){
