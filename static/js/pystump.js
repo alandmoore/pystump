@@ -92,7 +92,7 @@ function slide_content_eval(content){
     var d = new Date();
 
     variables['date'] = d.toLocaleDateString();
-    variables['time'] = d.toLocaleTimeString();
+    variables['time'] = d.toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'});
 
     return Mustache.render(content, variables);
 
