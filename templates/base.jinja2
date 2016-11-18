@@ -9,6 +9,7 @@
     <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/animate.css")}}' />
     <script src='{{url_for("static", filename="js/jquery.js")}}'></script>
     <script src='{{url_for("static", filename="js/jquery-ui.js")}}'></script>
+    <script src='{{url_for("static", filename="js/mustache.js")}}'></script>
     {% if session.get('auth') %} {# these are only needed if logged in #}
     <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="css/jquery-ui-timepicker-addon.css")}}' />
     <script src='{{url_for("static", filename="js/jquery-ui-timepicker-addon.js")}}'></script>

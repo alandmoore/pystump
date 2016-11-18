@@ -1,7 +1,7 @@
 //Javascript functions for PyStump
 
 //provided by libraries
-/* global $, jQuery, CKEDITOR */
+/* global $, jQuery, CKEDITOR, Mustache */
 
 //provided by the header
 /* global Transition_Time, Show_Updated, Show_Author, transition_backend */
@@ -84,6 +84,19 @@ $.fn.extend({
     }
 });
 
+
+//evaluate variables in the slide content
+function slide_content_eval(content){
+
+    var variables = {};
+    var d = new Date();
+
+    variables['date'] = d.toLocaleDateString();
+    variables['time'] = d.toLocaleTimeString();
+
+    return Mustache.render(content, variables);
+
+}
 
 ////////////////
 // Components //
@@ -276,39 +289,43 @@ var AnnouncementDisplay = function(el, autoadvance){
     };
 
     $ad.show_slide = function(){
-    var duration = parseInt($ad.slide.data("duration"), 10) * 1000;
-    var transition = $ad.slide.data("transition");
-    var transition_time = parseInt(Transition_Time, 10) || 500; // milliseconds
+        var duration = parseInt($ad.slide.data("duration"), 10) * 1000;
+        var transition = $ad.slide.data("transition");
+        var transition_time = parseInt(Transition_Time, 10) || 500; // milliseconds
 
-    //set title
-    $("#title").html($ad.slide.data("title"));
-    //set meta info
-    var meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
-        (Show_Author ? ("By " + $ad.slide.data("author")) : '');
-    $("#meta").html(meta_text);
+        //set title
+        $("#title").html($ad.slide.data("title"));
+        //set meta info
+        var meta_text = (Show_Updated ? ("Updated " + $ad.slide.data("updated") + ' ') : ' ') +
+            (Show_Author ? ("By " + $ad.slide.data("author")) : '');
+        $("#meta").html(meta_text);
 
-    //hide the slides and show the new one.
-    //$ad.slides.hide();
-    if ($ad.old_slide){
-        $ad.old_slide.css({'z-index': 0});
-    }
-    $ad.slide.css({'z-index': 100, 'top': 0});
-    if (transition && transition_backend === 'animatecss'){
-        $ad.slide.show();
-        $ad.slide.animateCss(transition, transition_time);
-        $ad.slide.one('animatecss.finished', function(){
-        $ad.old_slide.hide();
-        });
-    }else if (transition && transition_backend === 'jquery-ui'){
-        $ad.slide.show({
-        effect: transition,
-        duration: transition_time,
-        complete: function(){ $ad.old_slide.hide(); }
-        });
-    }else{
-        $ad.slide.show();
-        $ad.old_slide.hide();
-    }
+        //process variables in the slide content
+        $ad.slide.html(slide_content_eval($ad.slide.html()));
+
+        //hide the slides and show the new one.
+        //$ad.slides.hide();
+        if ($ad.old_slide){
+            $ad.old_slide.css({'z-index': 0});
+        }
+
+        $ad.slide.css({'z-index': 100, 'top': 0});
+        if (transition && transition_backend === 'animatecss'){
+            $ad.slide.show();
+            $ad.slide.animateCss(transition, transition_time);
+            $ad.slide.one('animatecss.finished', function(){
+            $ad.old_slide.hide();
+            });
+        }else if (transition && transition_backend === 'jquery-ui'){
+            $ad.slide.show({
+                effect: transition,
+                duration: transition_time,
+                complete: function(){ $ad.old_slide.hide(); }
+            });
+        }else{
+            $ad.slide.show();
+            $ad.old_slide.hide();
+        }
 
     //set the timer for moving to the next slide
     if (autoadvance) {
