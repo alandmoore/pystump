@@ -186,7 +186,7 @@ var FormDialog = function(url, init_function, submit_function){
         );
 
         // Textareas to CKEDITOR
-        $("TEXTAREA.ckedit").ckeditor({height: '20em'});
+        $("TEXTAREA.ckedit").ckeditor({customConfig: '../js/editor_config.js', height: '20em'});
 
         //custom init function
 
@@ -253,12 +253,12 @@ var AnnouncementList = function(el, search_el){
 var AnnouncementDisplay = function(el, autoadvance){
     var $ad = $(el);
     if ($ad.length === 0){
-    $("#back_slide").set_enabled(false);
-    $("#advance_slide").set_enabled(false);
-    return null;
+        $("#back_slide").set_enabled(false);
+        $("#advance_slide").set_enabled(false);
+        return null;
     }else{
-    $("#back_slide").set_enabled(true);
-    $("#advance_slide").set_enabled(true);
+        $("#back_slide").set_enabled(true);
+        $("#advance_slide").set_enabled(true);
     }
 
     $ad.init = function(){
@@ -282,10 +282,10 @@ var AnnouncementDisplay = function(el, autoadvance){
     $.get(
         document.basepath.replace(/\/$/, '') + "/slides",
         function(data){
-        $ad.html(data);
-        $ad.init();
+            $ad.html(data);
+            $ad.init();
         }).fail(function(){
-        window.setTimeout($ad.refresh_slides, 10000);
+            window.setTimeout($ad.refresh_slides, 10000);
         });
     };
 
