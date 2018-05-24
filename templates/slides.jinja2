@@ -10,7 +10,7 @@
      data-title = "{{a.get("title")|striptags|escape}}"
      data-id={{a.get("id")|int}}
      data-duration={{a.get("duration")|int}}
-     style= "{{styleif(a.get("fg_color"), "color")}} {{styleif(a.get("bg_color"), "background-color")}} {{styleif(a.get("bg_image"), "background-image", True)}} {% if bg_mode == 'stretch' %}background-size: 100%;{% elif bg_mode in ('left', 'right', 'center') %} background-position: {{bg_mode}}; background-repeat: no-repeat; bg-size: auto;{% elif bg_mode == 'tile'%}background-size: auto; background-repeat: repeat;{% endif %}"
+     style= "{{styleif(a.get("fg_color"), "color")}} {{styleif(a.get("bg_color"), "background-color")}} {{styleif(a.get("bg_image"), "background-image", True)}} {% if bg_mode == 'stretch' %}background-size: 100%; background-repeat: no-repeat;{% elif bg_mode in ('left', 'right', 'center') %} background-position: {{bg_mode}}; background-repeat: no-repeat; bg-size: auto;{% elif bg_mode == 'tile'%}background-size: auto; background-repeat: repeat;{% endif %}"
      data-author="{{a.get("author")}}"
      data-updated="{{a.get("updated")}}"
      data-transition="{{a.get("transition") or ''}}"
